@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================================================================
+   Estilos base globales.
+   Casi todo se resuelve con clases de Tailwind en los componentes; aquí solo
+   dejamos lo imprescindible.
+   ========================================================================== */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* Compensa la altura del navbar fijo al saltar a una sección con # */
+    scroll-padding-top: 5rem;
+  }
+
+  body {
+    @apply bg-white text-slate-700 antialiased;
+    @apply dark:bg-slate-950 dark:text-slate-300;
+  }
+
+  /* Foco visible y accesible en toda la página */
+  :focus-visible {
+    @apply outline-none ring-2 ring-indigo-500 ring-offset-2 ring-offset-white dark:ring-offset-slate-950;
+  }
+}
