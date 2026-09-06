@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react';
 import { Mail, MapPin, Send } from 'lucide-react';
 import { contact, personal, socials } from '../data';
 import { Section } from './Section';
+import { Reveal } from './Reveal';
 
 /**
  * Sección de contacto: datos directos + formulario sencillo (opcional).
@@ -22,17 +23,23 @@ export function Contact() {
   };
 
   return (
-    <Section id="contact" title="Contacto" subtitle={contact.message}>
+    <Section
+      id="contact"
+      index="05"
+      kicker="Hablemos"
+      title="Contacto"
+      subtitle={contact.message}
+    >
       <div className="grid gap-10 md:grid-cols-2">
         {/* Datos de contacto directos */}
-        <div className="space-y-5">
-          <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
+        <Reveal className="space-y-5">
+          <h3 className="font-display text-lg font-semibold text-slate-900 dark:text-white">
             {contact.heading}
           </h3>
 
           <a
             href={`mailto:${personal.email}`}
-            className="flex items-center gap-3 text-slate-600 transition-colors hover:text-indigo-500 dark:text-slate-400"
+            className="flex items-center gap-3 text-slate-600 transition-colors hover:text-brand-500 dark:text-slate-400"
           >
             <Mail size={18} /> {personal.email}
           </a>
@@ -49,74 +56,76 @@ export function Contact() {
                 target={s.href.startsWith('http') ? '_blank' : undefined}
                 rel="noreferrer"
                 aria-label={s.label}
-                className="rounded-lg border border-slate-200 p-2.5 text-slate-600 transition-colors hover:border-indigo-500 hover:text-indigo-500 dark:border-slate-800 dark:text-slate-400 dark:hover:border-indigo-500"
+                className="rounded-lg border border-slate-200 p-2.5 text-slate-600 transition-colors hover:border-brand-500 hover:text-brand-500 dark:border-slate-800 dark:text-slate-400 dark:hover:border-brand-500"
               >
                 <s.icon size={18} />
               </a>
             ))}
           </div>
-        </div>
+        </Reveal>
 
         {/* Formulario sencillo (opcional: puedes eliminar este <form>) */}
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label
-              htmlFor="name"
-              className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300"
-            >
-              Nombre
-            </label>
-            <input
-              id="name"
-              type="text"
-              required
-              value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-              className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition-colors focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 dark:border-slate-700 dark:bg-slate-900 dark:text-white"
-            />
-          </div>
+        <Reveal delay={120}>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label
+                htmlFor="name"
+                className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300"
+              >
+                Nombre
+              </label>
+              <input
+                id="name"
+                type="text"
+                required
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition-colors focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 dark:border-slate-700 dark:bg-slate-900 dark:text-white"
+              />
+            </div>
 
-          <div>
-            <label
-              htmlFor="email"
-              className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300"
-            >
-              Email
-            </label>
-            <input
-              id="email"
-              type="email"
-              required
-              value={form.email}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
-              className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition-colors focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 dark:border-slate-700 dark:bg-slate-900 dark:text-white"
-            />
-          </div>
+            <div>
+              <label
+                htmlFor="email"
+                className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300"
+              >
+                Email
+              </label>
+              <input
+                id="email"
+                type="email"
+                required
+                value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition-colors focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 dark:border-slate-700 dark:bg-slate-900 dark:text-white"
+              />
+            </div>
 
-          <div>
-            <label
-              htmlFor="message"
-              className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300"
-            >
-              Mensaje
-            </label>
-            <textarea
-              id="message"
-              rows={4}
-              required
-              value={form.message}
-              onChange={(e) => setForm({ ...form, message: e.target.value })}
-              className="w-full resize-y rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition-colors focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 dark:border-slate-700 dark:bg-slate-900 dark:text-white"
-            />
-          </div>
+            <div>
+              <label
+                htmlFor="message"
+                className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300"
+              >
+                Mensaje
+              </label>
+              <textarea
+                id="message"
+                rows={4}
+                required
+                value={form.message}
+                onChange={(e) => setForm({ ...form, message: e.target.value })}
+                className="w-full resize-y rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition-colors focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 dark:border-slate-700 dark:bg-slate-900 dark:text-white"
+              />
+            </div>
 
-          <button
-            type="submit"
-            className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-indigo-500"
-          >
-            <Send size={16} /> Enviar mensaje
-          </button>
-        </form>
+            <button
+              type="submit"
+              className="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-600/25 transition-all hover:-translate-y-0.5 hover:bg-brand-500"
+            >
+              <Send size={16} /> Enviar mensaje
+            </button>
+          </form>
+        </Reveal>
       </div>
     </Section>
   );

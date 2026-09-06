@@ -39,11 +39,13 @@ import {
 import * as THREE from 'three';
 import type { Group, PointLight } from 'three';
 
-/* Paleta (coincide con los acentos indigo/violet del resto del sitio). */
-const INDIGO = '#6366f1';
-const VIOLET = '#8b5cf6';
-const SKY = '#38bdf8';
-const RIM = '#c7d2fe';
+/* Paleta (coincide con los acentos brand/accent —emerald/teal— del sitio).
+   Si cambias `brand`/`accent` en tailwind.config.js, actualiza también estos
+   hexadecimales para mantener la coherencia visual. */
+const BRAND = '#10b981'; // emerald-500
+const ACCENT = '#14b8a6'; // teal-500
+const SCAN = '#22d3ee'; // cyan-400 — haz de lectura del cabezal
+const RIM = '#a7f3d0'; // emerald-200 — luz de contorno / partículas
 
 /* Geometría de la cinta: radio central y ancho del listón. */
 const R = 2;
@@ -156,7 +158,7 @@ function makeBinaryTexture(): THREE.CanvasTexture {
       const y = ((r + 0.5) / rows) * canvas.height;
       for (let x = 4; x < canvas.width; x += 20) {
         const one = Math.random() > 0.5;
-        ctx.fillStyle = one ? '#c7d2fe' : '#4f46e5';
+        ctx.fillStyle = one ? '#a7f3d0' : '#0f766e';
         ctx.fillText(one ? '1' : '0', x, y);
       }
     }
@@ -233,8 +235,12 @@ function MobiusComputer() {
     if (group.current) {
       // Gira en su propio plano (nunca de canto) + leve cabeceo.
       group.current.rotation.z += delta * 0.22;
-      group.current.rotation.x = 0.5 + Math.sin(t * 0.3) * 0.12;
-      group.current.rotation.y = Math.sin(t * 0.22) * 0.18;
+      // Cabeceo automático + parallax suave hacia el cursor (state.pointer va
+      // de -1 a 1). En móvil el puntero queda en (0,0): sin efecto.
+      const targetX = 0.5 + Math.sin(t * 0.3) * 0.12 - state.pointer.y * 0.18;
+      const targetY = Math.sin(t * 0.22) * 0.18 + state.pointer.x * 0.25;
+      group.current.rotation.x = THREE.MathUtils.lerp(group.current.rotation.x, targetX, 0.05);
+      group.current.rotation.y = THREE.MathUtils.lerp(group.current.rotation.y, targetY, 0.05);
     }
 
     // El cabezal se apoya en la superficie y se orienta con ella.
@@ -275,7 +281,7 @@ function MobiusComputer() {
             color="#334155"
             metalness={0.9}
             roughness={0.3}
-            emissive={INDIGO}
+            emissive={BRAND}
             emissiveIntensity={0.35}
           />
         </mesh>
@@ -287,7 +293,7 @@ function MobiusComputer() {
               color="#334155"
               metalness={0.9}
               roughness={0.3}
-              emissive={INDIGO}
+              emissive={BRAND}
               emissiveIntensity={0.35}
             />
           </mesh>
@@ -296,8 +302,8 @@ function MobiusComputer() {
         <mesh position={[0, 0.028, 0]}>
           <boxGeometry args={[STRIP_W * 1.05, 0.02, 0.05]} />
           <meshStandardMaterial
-            color={SKY}
-            emissive="#e0f2fe"
+            color={SCAN}
+            emissive="#cffafe"
             emissiveIntensity={3}
             toneMapped={false}
           />
@@ -325,8 +331,8 @@ function Scene({ interactive, autoRotate, scale }: SceneProps) {
   return (
     <>
       <ambientLight intensity={0.6} />
-      <pointLight position={[4, 3, 5]} intensity={2.2} color={INDIGO} />
-      <pointLight position={[-5, -2, -3]} intensity={1.6} color={VIOLET} />
+      <pointLight position={[4, 3, 5]} intensity={2.2} color={BRAND} />
+      <pointLight position={[-5, -2, -3]} intensity={1.6} color={ACCENT} />
 
       <Float speed={1.1} rotationIntensity={0.12} floatIntensity={0.5}>
         <group scale={scale}>
@@ -361,7 +367,7 @@ function CanvasLoader() {
   return (
     <Html center>
       <div className="flex items-center gap-2 whitespace-nowrap rounded-full border border-slate-300 bg-white/80 px-3 py-1.5 text-xs font-medium text-slate-600 backdrop-blur dark:border-slate-700 dark:bg-slate-900/80 dark:text-slate-300">
-        <span className="h-2 w-2 animate-pulse rounded-full bg-indigo-500" />
+        <span className="h-2 w-2 animate-pulse rounded-full bg-brand-500" />
         Cargando escena 3D… {Math.round(progress)}%
       </div>
     </Html>
@@ -373,7 +379,7 @@ function CanvasFallback() {
   return (
     <div className="flex h-full w-full items-center justify-center p-6 text-center">
       <div>
-        <div className="mx-auto mb-4 h-20 w-28 rounded-lg border-2 border-indigo-500/50 bg-indigo-500/10" />
+        <div className="mx-auto mb-4 h-20 w-28 rounded-lg border-2 border-brand-500/50 bg-brand-500/10" />
         <p className="max-w-[16rem] text-sm text-slate-500 dark:text-slate-400">
           Tu navegador no puede mostrar la escena 3D, pero el resto del sitio
           funciona con normalidad.
@@ -413,13 +419,13 @@ export function HeroCanvas() {
           className={isMobile ? 'pointer-events-none' : ''}
           dpr={[1, 2]}
           gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
-          camera={{ position: [0, 0.4, 8], fov: 42 }}
+          camera={{ position: [0, 0.4, 8], fov: 40 }}
         >
           <Suspense fallback={<CanvasLoader />}>
             <Scene
               interactive={!isMobile}
               autoRotate={!reducedMotion}
-              scale={isMobile ? 0.78 : 1}
+              scale={isMobile ? 0.78 : 1.05}
             />
           </Suspense>
         </Canvas>
