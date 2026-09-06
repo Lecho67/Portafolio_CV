@@ -3,11 +3,11 @@
  *  HeroCanvas — escena 3D interactiva de la sección Hero
  * ----------------------------------------------------------------------------
  *  Cinta de Möbius procedural (una sola cara, un solo borde) revestida de
- *  dígitos binarios que fluyen, con un "paquete de datos" luminoso que la
- *  recorre: da dos vueltas completas antes de volver al punto de partida,
- *  la propiedad que hace especial a la superficie. Metáfora de un sistema
- *  full-stack como bucle continuo. Rotación con OrbitControls (auto-rotate)
- *  y destellos de partículas de fondo.
+ *  dígitos binarios que fluyen. Un cabezal de lectura estilo máquina de
+ *  Turing recorre la "cinta infinita": da dos vueltas completas antes de
+ *  volver al punto de partida, la propiedad que hace especial a la
+ *  superficie. Rotación con OrbitControls (auto-rotate) y destellos de
+ *  partículas de fondo.
  *
  *  Responsivo y seguro en móvil:
  *   - En pantallas < lg los controles quedan deshabilitados y el <canvas>
@@ -37,7 +37,7 @@ import {
   useProgress,
 } from '@react-three/drei';
 import * as THREE from 'three';
-import type { Group, Mesh, PointLight } from 'three';
+import type { Group, PointLight } from 'three';
 
 /* Paleta (coincide con los acentos indigo/violet del resto del sitio). */
 const INDIGO = '#6366f1';
@@ -169,17 +169,52 @@ function makeBinaryTexture(): THREE.CanvasTexture {
   return texture;
 }
 
+/** Marco ortonormal (tangente, normal, "ancho") de la superficie en el parámetro u. */
+interface SurfaceFrame {
+  p: THREE.Vector3;
+  tangent: THREE.Vector3;
+  normal: THREE.Vector3;
+  across: THREE.Vector3;
+}
+
+function writeSurfaceFrame(u: number, f: SurfaceFrame): void {
+  const eps = 0.015;
+  const p0 = mobiusPoint(u, 0);
+  const pa = mobiusPoint(u + eps, 0);
+  const pb = mobiusPoint(u - eps, 0);
+  const wa = mobiusPoint(u, STRIP_W * 0.5);
+  const wb = mobiusPoint(u, -STRIP_W * 0.5);
+
+  f.p.set(p0[0], p0[1], p0[2]);
+  f.tangent.set(pa[0] - pb[0], pa[1] - pb[1], pa[2] - pb[2]).normalize();
+  f.across.set(wa[0] - wb[0], wa[1] - wb[1], wa[2] - wb[2]).normalize();
+  f.normal.crossVectors(f.tangent, f.across).normalize();
+  // Re-ortogonaliza el ancho (las líneas u/v de la cinta no son perpendiculares).
+  f.across.crossVectors(f.normal, f.tangent).normalize();
+}
+
 /**
- * Cinta de Möbius revestida de bits que fluyen + un paquete de datos que la
- * recorre (dos vueltas completas para volver al inicio).
+ * Cinta de Möbius revestida de bits que fluyen. Un cabezal de lectura —como el
+ * de una máquina de Turing— recorre la cinta escaneando la "cinta infinita":
+ * da dos vueltas completas antes de volver al punto de partida.
  */
 function MobiusComputer() {
   const group = useRef<Group>(null);
-  const packet = useRef<Mesh>(null);
-  const packetLight = useRef<PointLight>(null);
+  const head = useRef<Group>(null);
+  const headLight = useRef<PointLight>(null);
 
   const geometry = useMemo(() => makeMobiusGeometry(), []);
   const texture = useMemo(() => makeBinaryTexture(), []);
+  const frame = useMemo<SurfaceFrame>(
+    () => ({
+      p: new THREE.Vector3(),
+      tangent: new THREE.Vector3(),
+      normal: new THREE.Vector3(),
+      across: new THREE.Vector3(),
+    }),
+    [],
+  );
+  const basis = useMemo(() => new THREE.Matrix4(), []);
 
   useEffect(
     () => () => {
@@ -202,10 +237,14 @@ function MobiusComputer() {
       group.current.rotation.y = Math.sin(t * 0.22) * 0.18;
     }
 
-    // Paquete de datos sobre el borde de la cinta.
-    const [x, y, z] = mobiusPoint(t * 0.75, STRIP_W * 0.5);
-    packet.current?.position.set(x, y, z);
-    packetLight.current?.position.set(x, y, z);
+    // El cabezal se apoya en la superficie y se orienta con ella.
+    writeSurfaceFrame(t * 0.75, frame);
+    if (head.current) {
+      head.current.position.copy(frame.p);
+      basis.makeBasis(frame.across, frame.normal, frame.tangent);
+      head.current.quaternion.setFromRotationMatrix(basis);
+    }
+    headLight.current?.position.copy(frame.p).addScaledVector(frame.normal, 0.35);
   });
 
   return (
@@ -227,17 +266,44 @@ function MobiusComputer() {
         <meshBasicMaterial color={RIM} wireframe transparent opacity={0.1} />
       </mesh>
 
-      {/* Paquete de datos + su luz de acompañamiento */}
-      <mesh ref={packet}>
-        <sphereGeometry args={[0.13, 20, 20]} />
-        <meshStandardMaterial
-          color={SKY}
-          emissive={SKY}
-          emissiveIntensity={2.6}
-          toneMapped={false}
-        />
-      </mesh>
-      <pointLight ref={packetLight} color={SKY} intensity={3} distance={4.5} />
+      {/* Cabezal de lectura: abraza la cinta y la escanea */}
+      <group ref={head}>
+        {/* Barra superior */}
+        <mesh position={[0, 0.16, 0]}>
+          <boxGeometry args={[STRIP_W * 1.2, 0.06, 0.12]} />
+          <meshStandardMaterial
+            color="#334155"
+            metalness={0.9}
+            roughness={0.3}
+            emissive={INDIGO}
+            emissiveIntensity={0.35}
+          />
+        </mesh>
+        {/* Rieles laterales que envuelven los bordes */}
+        {[-1, 1].map((dir) => (
+          <mesh key={dir} position={[dir * STRIP_W * 0.6, 0, 0]}>
+            <boxGeometry args={[0.07, 0.38, 0.14]} />
+            <meshStandardMaterial
+              color="#334155"
+              metalness={0.9}
+              roughness={0.3}
+              emissive={INDIGO}
+              emissiveIntensity={0.35}
+            />
+          </mesh>
+        ))}
+        {/* Haz de lectura sobre la superficie */}
+        <mesh position={[0, 0.028, 0]}>
+          <boxGeometry args={[STRIP_W * 1.05, 0.02, 0.05]} />
+          <meshStandardMaterial
+            color={SKY}
+            emissive="#e0f2fe"
+            emissiveIntensity={3}
+            toneMapped={false}
+          />
+        </mesh>
+      </group>
+      <pointLight ref={headLight} color={RIM} intensity={3} distance={4.5} />
     </group>
   );
 }
