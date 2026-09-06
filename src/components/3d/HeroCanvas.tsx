@@ -2,8 +2,9 @@
  * ============================================================================
  *  HeroCanvas — escena 3D interactiva de la sección Hero
  * ----------------------------------------------------------------------------
- *  Objeto procedural (laptop + smartphone flotantes) construido con mesh
- *  primitives de Three.js, rotación suave con OrbitControls (auto-rotate) y
+ *  "Átomo de React" procedural: núcleo icosaédrico con brillo y 3 órbitas
+ *  elípticas (a 0° / 60° / 120°, como el logo de React) con un electrón
+ *  recorriendo cada una. Rotación suave con OrbitControls (auto-rotate) y
  *  destellos de partículas de fondo.
  *
  *  Responsivo y seguro en móvil:
@@ -20,36 +21,31 @@ import {
   Component,
   Suspense,
   useEffect,
+  useMemo,
   useRef,
   useState,
   type ReactNode,
 } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import {
-  ContactShadows,
   Float,
   Html,
+  Line,
   OrbitControls,
   Sparkles,
   useProgress,
 } from '@react-three/drei';
-import type { Group } from 'three';
+import type { Group, Mesh } from 'three';
 
 /* Paleta (coincide con los acentos indigo/violet del resto del sitio). */
 const INDIGO = '#6366f1';
 const VIOLET = '#8b5cf6';
-const CHASSIS = '#334155';
-const CHASSIS_DARK = '#1e293b';
+const SKY = '#38bdf8';
+const RIM = '#c7d2fe';
 
-/* Líneas de "código" pintadas sobre la pantalla de la laptop. */
-const CODE_LINES: { x: number; y: number; w: number; color: string }[] = [
-  { x: -0.62, y: 0.44, w: 0.5, color: '#c7d2fe' },
-  { x: -0.3, y: 0.29, w: 1.0, color: '#e0e7ff' },
-  { x: -0.18, y: 0.14, w: 1.24, color: '#a5b4fc' },
-  { x: -0.42, y: -0.01, w: 0.8, color: '#e0e7ff' },
-  { x: -0.24, y: -0.16, w: 1.12, color: '#c7d2fe' },
-  { x: -0.52, y: -0.31, w: 0.6, color: '#a5b4fc' },
-];
+/* Semiejes de las órbitas elípticas del átomo. */
+const RX = 2.15;
+const RY = 0.82;
 
 /* -------------------------------------------------------------------------- */
 /*  Hooks de entorno                                                           */
@@ -89,87 +85,88 @@ function usePrefersReducedMotion(): boolean {
 /*  Geometría procedural                                                       */
 /* -------------------------------------------------------------------------- */
 
-/** Laptop minimalista: base + teclado + pantalla con brillo y líneas de código. */
-function Laptop() {
-  const group = useRef<Group>(null);
+/** Puntos de una elipse en el plano XY (para dibujar cada órbita). */
+function ellipsePoints(rx: number, ry: number, segments = 128): [number, number, number][] {
+  const pts: [number, number, number][] = [];
+  for (let i = 0; i <= segments; i++) {
+    const a = (i / segments) * Math.PI * 2;
+    pts.push([Math.cos(a) * rx, Math.sin(a) * ry, 0]);
+  }
+  return pts;
+}
+
+interface OrbitProps {
+  /** Giro del plano de la órbita sobre Z (0° / 60° / 120°, como el logo de React). */
+  spin: number;
+  color: string;
+  /** Velocidad angular del electrón. */
+  speed: number;
+  /** Desfase inicial del electrón. */
+  phase: number;
+}
+
+/** Una órbita elíptica con su electrón. */
+function Orbit({ spin, color, speed, phase }: OrbitProps) {
+  const electron = useRef<Mesh>(null);
+  const points = useMemo(() => ellipsePoints(RX, RY), []);
 
   useFrame((state) => {
-    if (!group.current) return;
-    const t = state.clock.getElapsedTime();
-    // Ligero vaivén sobre la orientación base, además del auto-rotate de la cámara.
-    group.current.rotation.y = -0.5 + Math.sin(t * 0.35) * 0.12;
+    if (!electron.current) return;
+    const t = state.clock.getElapsedTime() * speed + phase;
+    electron.current.position.set(Math.cos(t) * RX, Math.sin(t) * RY, 0);
   });
 
   return (
-    <group ref={group} position={[0, -0.35, 0]} rotation={[0.1, -0.5, 0]} scale={0.95}>
-      {/* Base / chasis */}
-      <mesh castShadow receiveShadow>
-        <boxGeometry args={[2.5, 0.12, 1.7]} />
-        <meshStandardMaterial color={CHASSIS} metalness={0.9} roughness={0.3} />
+    <group rotation={[0, 0, spin]}>
+      <Line points={points} color={color} lineWidth={2.5} transparent opacity={0.6} />
+      <mesh ref={electron}>
+        <sphereGeometry args={[0.13, 20, 20]} />
+        <meshStandardMaterial
+          color={color}
+          emissive={color}
+          emissiveIntensity={2.2}
+          toneMapped={false}
+        />
       </mesh>
-
-      {/* Superficie del teclado */}
-      <mesh position={[0, 0.062, 0.12]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[2.2, 1.35]} />
-        <meshStandardMaterial color={CHASSIS_DARK} metalness={0.5} roughness={0.7} />
-      </mesh>
-      {/* Trackpad */}
-      <mesh position={[0, 0.063, 0.52]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[0.7, 0.42]} />
-        <meshStandardMaterial color="#475569" metalness={0.4} roughness={0.6} />
-      </mesh>
-
-      {/* Tapa + pantalla — bisagra en el borde trasero, reclinada ~20° */}
-      <group position={[0, 0.02, -0.85]} rotation={[-0.36, 0, 0]}>
-        {/* Carcasa de la tapa */}
-        <mesh castShadow position={[0, 0.78, -0.04]}>
-          <boxGeometry args={[2.5, 1.56, 0.07]} />
-          <meshStandardMaterial color={CHASSIS} metalness={0.9} roughness={0.3} />
-        </mesh>
-
-        {/* Panel emisivo (el "glow" de la pantalla, mirando a la cámara) */}
-        <mesh position={[0, 0.78, 0.02]}>
-          <planeGeometry args={[2.3, 1.38]} />
-          <meshStandardMaterial
-            color={INDIGO}
-            emissive={INDIGO}
-            emissiveIntensity={1.1}
-            toneMapped={false}
-          />
-        </mesh>
-
-        {/* Líneas de código */}
-        {CODE_LINES.map((line, i) => (
-          <mesh key={i} position={[line.x, 0.78 + line.y, 0.03]}>
-            <planeGeometry args={[line.w, 0.08]} />
-            <meshBasicMaterial color={line.color} toneMapped={false} />
-          </mesh>
-        ))}
-      </group>
     </group>
   );
 }
 
-/** Smartphone flotante (representa el desarrollo móvil en Kotlin). */
-function Phone() {
+/** Átomo de React: núcleo icosaédrico + 3 órbitas con electrones. */
+function ReactAtom() {
+  const group = useRef<Group>(null);
+  const core = useRef<Mesh>(null);
+
+  useFrame((state) => {
+    const t = state.clock.getElapsedTime();
+    if (group.current) group.current.rotation.z = t * 0.25;
+    if (core.current) core.current.scale.setScalar(1 + Math.sin(t * 2) * 0.05);
+  });
+
   return (
-    <Float speed={2.2} rotationIntensity={1} floatIntensity={1.4}>
-      <group position={[1.7, 0.75, 0.9]} rotation={[0.2, -0.55, 0.14]}>
-        <mesh castShadow>
-          <boxGeometry args={[0.62, 1.25, 0.07]} />
-          <meshStandardMaterial color={CHASSIS} metalness={0.9} roughness={0.28} />
-        </mesh>
-        <mesh position={[0, 0, 0.04]}>
-          <planeGeometry args={[0.54, 1.14]} />
-          <meshStandardMaterial
-            color={VIOLET}
-            emissive={VIOLET}
-            emissiveIntensity={1.1}
-            toneMapped={false}
-          />
-        </mesh>
-      </group>
-    </Float>
+    <group ref={group} rotation={[0.32, 0, 0]}>
+      {/* Núcleo emisivo */}
+      <mesh ref={core}>
+        <icosahedronGeometry args={[0.55, 1]} />
+        <meshStandardMaterial
+          color={INDIGO}
+          emissive={INDIGO}
+          emissiveIntensity={1.5}
+          flatShading
+          toneMapped={false}
+        />
+      </mesh>
+      {/* Malla de alambre sobre el núcleo */}
+      <mesh scale={1.06}>
+        <icosahedronGeometry args={[0.55, 1]} />
+        <meshBasicMaterial color={RIM} wireframe transparent opacity={0.35} />
+      </mesh>
+
+      {/* 3 órbitas a 0° / 60° / 120° */}
+      <Orbit spin={0} color={INDIGO} speed={0.9} phase={0} />
+      <Orbit spin={Math.PI / 3} color={VIOLET} speed={1.15} phase={2.1} />
+      <Orbit spin={-Math.PI / 3} color={SKY} speed={0.7} phase={4.2} />
+    </group>
   );
 }
 
@@ -182,43 +179,35 @@ interface SceneProps {
   interactive: boolean;
   /** Auto-rotación (se apaga con prefers-reduced-motion). */
   autoRotate: boolean;
+  /** Escala del átomo (se reduce en móvil para que no se recorte). */
+  scale: number;
 }
 
-function Scene({ interactive, autoRotate }: SceneProps) {
+function Scene({ interactive, autoRotate, scale }: SceneProps) {
   return (
     <>
-      <ambientLight intensity={0.9} />
-      <hemisphereLight intensity={0.6} color="#c7d2fe" groundColor="#1e293b" />
-      <directionalLight position={[4, 6, 5]} intensity={2} castShadow />
-      <pointLight position={[0, 2.5, 5]} intensity={2.4} distance={20} />
-      <pointLight position={[-5, 2, -3]} intensity={3.5} distance={20} color={INDIGO} />
-      <pointLight position={[5, -1, 3]} intensity={3} distance={20} color={VIOLET} />
+      <ambientLight intensity={0.5} />
+      <pointLight position={[3, 2, 4]} intensity={2} color={RIM} />
+      <pointLight position={[-4, -2, -3]} intensity={1.5} color={VIOLET} />
 
-      <Float speed={1.4} rotationIntensity={0.3} floatIntensity={0.7}>
-        <Laptop />
+      <Float speed={1.2} rotationIntensity={0.15} floatIntensity={0.6}>
+        <group scale={scale}>
+          <ReactAtom />
+        </group>
       </Float>
-      <Phone />
 
-      {/* Destellos de partículas / "código" en el fondo */}
-      <Sparkles count={60} scale={[9, 5, 5]} size={2.4} speed={0.35} color="#a5b4fc" />
-
-      <ContactShadows
-        position={[0, -1.5, 0]}
-        opacity={0.3}
-        scale={12}
-        blur={2.8}
-        far={4.5}
-      />
+      {/* Destellos de partículas en el fondo */}
+      <Sparkles count={80} scale={[11, 7, 7]} size={2.2} speed={0.3} color={RIM} />
 
       <OrbitControls
         makeDefault
         enabled={interactive}
         autoRotate={autoRotate}
-        autoRotateSpeed={0.9}
+        autoRotateSpeed={0.8}
         enableZoom={false}
         enablePan={false}
-        minPolarAngle={Math.PI / 3.2}
-        maxPolarAngle={Math.PI / 1.9}
+        minPolarAngle={Math.PI / 4}
+        maxPolarAngle={Math.PI / 1.7}
       />
     </>
   );
@@ -284,13 +273,16 @@ export function HeroCanvas() {
       <CanvasErrorBoundary fallback={<CanvasFallback />}>
         <Canvas
           className={isMobile ? 'pointer-events-none' : ''}
-          shadows
           dpr={[1, 2]}
           gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
-          camera={{ position: [0, 1.4, 7], fov: 42 }}
+          camera={{ position: [0, 0.3, 6.3], fov: 42 }}
         >
           <Suspense fallback={<CanvasLoader />}>
-            <Scene interactive={!isMobile} autoRotate={!reducedMotion} />
+            <Scene
+              interactive={!isMobile}
+              autoRotate={!reducedMotion}
+              scale={isMobile ? 0.82 : 1}
+            />
           </Suspense>
         </Canvas>
       </CanvasErrorBoundary>
