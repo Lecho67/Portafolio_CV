@@ -45,9 +45,18 @@ export interface Highlight {
   description: string;
 }
 
+export interface ProjectImage {
+  /** Ruta dentro de `public/`, p. ej. '/proyectos/bordercheck-1.png' */
+  src: string;
+  /** Texto alternativo accesible (describe qué se ve en la captura) */
+  alt: string;
+}
+
 export interface Project {
+  /** Identificador para la URL de detalle: '#/proyectos/<slug>'. Sin espacios. */
+  slug: string;
   title: string;
-  /** Qué hace y qué problema resuelve (2-3 líneas) */
+  /** Resumen corto para la tarjeta (2-3 líneas) */
   description: string;
   /** Tecnologías mostradas como badges */
   tags: string[];
@@ -65,6 +74,22 @@ export interface Project {
   icon?: LucideIcon;
   /** Clases de gradiente Tailwind para la portada */
   cover?: string;
+
+  /* ---- Página de detalle (#/proyectos/<slug>) ------------------------- */
+  /** Duración / dedicación, p. ej. '3 meses · 2025' */
+  timeline?: string;
+  /** Contexto del equipo, p. ej. 'Proyecto individual' o 'Equipo de 4' */
+  team?: string;
+  /** Cliente / contexto, p. ej. 'Proyecto académico' o 'UESVALLE' */
+  context?: string;
+  /** Párrafos de contexto: qué problema había y por qué se construyó */
+  overview?: string[];
+  /** Qué hiciste tú / qué aporta el proyecto (lista de puntos) */
+  contributions?: string[];
+  /** Resultados e impacto medible o cualitativo (lista de puntos) */
+  outcomes?: string[];
+  /** Capturas de pantalla. Coloca los archivos en `public/proyectos/`. */
+  images?: ProjectImage[];
 }
 
 export interface SkillCategory {
@@ -173,34 +198,94 @@ export const about: { paragraphs: string[]; highlights: Highlight[] } = {
 /*  PROYECTOS                                                                  */
 /* -------------------------------------------------------------------------- */
 
+/*
+ * NOTA — página de detalle de cada proyecto (#/proyectos/<slug>):
+ *   Los campos `overview`, `contributions`, `outcomes`, `timeline`, `team` e
+ *   `images` alimentan esa página. He redactado un borrador a partir de la
+ *   información que ya había; REVÍSALO y ajústalo a lo que realmente hiciste
+ *   (sobre todo los datos concretos: duración, tamaño del equipo, resultados).
+ *   Para las capturas, coloca los archivos en `public/proyectos/` y añádelos
+ *   al array `images`. Si lo dejas vacío, la galería muestra un marcador.
+ */
 export const projects: Project[] = [
   {
+    slug: 'bordercheck-ai',
     title: 'BorderCheck AI',
     description:
-      'Plataforma web full-stack para evaluación logística con integración de IA: analiza y prioriza operaciones de frontera, centraliza la documentación y asiste la toma de decisiones con modelos de lenguaje.',
-    tags: ['React', 'TypeScript', 'Tailwind CSS', 'Supabase', 'PostgreSQL', 'IA'],
+      'Plataforma web full-stack que digitaliza la evaluación de operaciones logísticas en frontera: centraliza la documentación, prioriza los casos por complejidad y riesgo, y usa modelos de lenguaje para resumir expedientes y sugerir la siguiente acción.',
+    tags: ['React', 'TypeScript', 'Tailwind CSS', 'Supabase', 'PostgreSQL', 'IA / LLMs'],
     featured: true,
-    year: '2024',
+    year: '2025',
     role: 'Full-stack',
     icon: ScanSearch,
     cover: 'from-emerald-500 via-teal-500 to-cyan-600',
+    timeline: 'TODO: p. ej. «3 meses · 2025»',
+    team: 'TODO: p. ej. «Proyecto individual» o «Equipo de 3»',
+    context: 'TODO: académico / empresa / cliente',
     // TODO: añade los enlaces reales cuando estén disponibles.
-    // repoUrl: 'https://github.com/tu-usuario/bordercheck-ai',
+    // repoUrl: 'https://github.com/Lecho67/bordercheck-ai',
     // liveUrl: 'https://bordercheck.example.com',
+    overview: [
+      'La evaluación de operaciones logísticas en frontera dependía de revisar manualmente documentación dispersa (facturas, permisos, manifiestos) para decidir qué casos necesitaban una inspección más detallada. El proceso era lento, difícil de auditar y variaba según quién lo hiciera.',
+      'BorderCheck AI reúne toda esa información en un expediente por operación y añade una capa de asistencia con IA para que el equipo se enfoque primero en los casos de mayor riesgo.',
+    ],
+    contributions: [
+      'Modelado de datos en PostgreSQL/Supabase: esquema de operaciones, documentos y usuarios con políticas de seguridad a nivel de fila (RLS).',
+      'Interfaz completa en React + TypeScript + Tailwind: carga de expedientes, tablero de priorización y vista de detalle de cada operación.',
+      'Integración con modelos de lenguaje para resumir la documentación de un expediente y proponer la siguiente acción.',
+      'Autenticación, control de acceso por rol y despliegue.',
+    ],
+    outcomes: [
+      'TODO: resultado medible, p. ej. «reduce de X a Y minutos la revisión de un expediente».',
+      'Un único lugar de consulta y trazabilidad para cada operación.',
+      'Criterio de priorización consistente entre revisores.',
+    ],
+    images: [
+      // { src: '/proyectos/bordercheck-tablero.png', alt: 'Tablero de priorización de operaciones' },
+      // { src: '/proyectos/bordercheck-detalle.png', alt: 'Vista de detalle de un expediente con el resumen de IA' },
+    ],
   },
   {
+    slug: 'uesvalle-app',
     title: 'UESVALLE App',
     description:
-      'Aplicación móvil nativa en Kotlin para el monitoreo e inspección de la calidad del agua en campo: registro de muestras, checklists de inspección y sincronización de datos para los equipos de saneamiento.',
-    tags: ['Kotlin', 'Android', 'Jetpack Compose', 'PostgreSQL'],
+      'App Android nativa en Kotlin y Jetpack Compose para las cuadrillas de saneamiento de UESVALLE. Digitaliza la inspección de la calidad del agua en campo —registro de muestras, checklists y captura sin conexión— y sincroniza los datos al recuperar la señal, sustituyendo el registro en papel.',
+    tags: ['Kotlin', 'Android', 'Jetpack Compose', 'Room', 'PostgreSQL'],
     featured: true,
     year: '2023',
     role: 'Desarrollo Android',
     icon: Droplets,
     cover: 'from-teal-500 via-cyan-500 to-sky-600',
-    // repoUrl: 'https://github.com/tu-usuario/uesvalle-app',
+    timeline: 'TODO: p. ej. «4 meses · 2023»',
+    team: 'TODO: p. ej. «Proyecto individual» o «Equipo de 2»',
+    context: 'UESVALLE (servicios de saneamiento del Valle del Cauca)',
+    // repoUrl: 'https://github.com/Lecho67/uesvalle-app',
+    overview: [
+      'Las cuadrillas que inspeccionan la calidad del agua trabajan en zonas donde muchas veces no hay cobertura. El registro se hacía en papel y luego había que transcribirlo en oficina, lo que retrasaba los reportes e introducía errores.',
+      'La app lleva todo el flujo de inspección al teléfono: se puede trabajar sin conexión y los datos suben solos cuando el dispositivo vuelve a tener red.',
+    ],
+    contributions: [
+      'Desarrollo de la app Android nativa en Kotlin con interfaz en Jetpack Compose.',
+      'Persistencia local con Room para que la captura funcione 100 % sin conexión.',
+      'Sincronización automática con el backend (PostgreSQL) al recuperar la conexión, con manejo de conflictos.',
+      'Flujos guiados de registro de muestras y checklists de inspección para estandarizar el trabajo en campo.',
+    ],
+    outcomes: [
+      'Elimina la doble digitación: del papel a la transcripción en oficina.',
+      'TODO: dato concreto, p. ej. «N inspecciones registradas» o «reduce en X el tiempo hasta el reporte».',
+      'Datos más completos y consistentes gracias a los formularios guiados.',
+    ],
+    images: [
+      // { src: '/proyectos/uesvalle-registro.png', alt: 'Pantalla de registro de una muestra' },
+      // { src: '/proyectos/uesvalle-checklist.png', alt: 'Checklist de inspección' },
+    ],
   },
 ];
+
+/** Busca un proyecto por su `slug` (para la página de detalle). */
+export function getProjectBySlug(slug: string): Project | undefined {
+  return projects.find((project) => project.slug === slug);
+}
 
 /* -------------------------------------------------------------------------- */
 /*  HABILIDADES TÉCNICAS                                                       */

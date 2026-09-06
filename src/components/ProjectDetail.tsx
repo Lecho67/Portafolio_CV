@@ -1,0 +1,352 @@
+import { useEffect, useState, type ReactNode } from 'react';
+import {
+  ArrowLeft,
+  ArrowRight,
+  Check,
+  ExternalLink,
+  Github,
+  ImageOff,
+  X,
+} from 'lucide-react';
+import { getProjectBySlug, projects, type ProjectImage } from '../data';
+import { Reveal } from './Reveal';
+
+/** Oculta los valores de ejemplo que aún empiezan por "TODO". */
+const real = (value?: string) =>
+  value && !value.trim().startsWith('TODO') ? value : undefined;
+const realList = (list?: string[]) =>
+  (list ?? []).filter((item) => !item.trim().startsWith('TODO'));
+
+interface ProjectDetailProps {
+  slug: string;
+}
+
+/**
+ * Página de detalle de un proyecto (`#/proyectos/<slug>`).
+ * Si el slug no existe, muestra un aviso con enlace de vuelta.
+ */
+export function ProjectDetail({ slug }: ProjectDetailProps) {
+  const project = getProjectBySlug(slug);
+
+  if (!project) {
+    return (
+      <div className="mx-auto max-w-2xl px-6 py-32 text-center">
+        <h1 className="font-display text-2xl font-bold text-slate-900 dark:text-white">
+          Proyecto no encontrado
+        </h1>
+        <p className="mt-3 text-slate-600 dark:text-slate-400">
+          El proyecto que buscas no existe o cambió de dirección.
+        </p>
+        <a
+          href="#projects"
+          className="mt-6 inline-flex items-center gap-2 rounded-lg bg-brand-600 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-500"
+        >
+          <ArrowLeft size={16} /> Volver a proyectos
+        </a>
+      </div>
+    );
+  }
+
+  const overview = realList(project.overview);
+  const contributions = realList(project.contributions);
+  const outcomes = realList(project.outcomes);
+  const images = project.images ?? [];
+
+  const meta = [
+    { label: 'Duración', value: real(project.timeline) },
+    { label: 'Equipo', value: real(project.team) },
+    { label: 'Rol', value: real(project.role) },
+    { label: 'Contexto', value: real(project.context) },
+  ].filter((m) => m.value);
+
+  const next = projects[(projects.findIndex((p) => p.slug === slug) + 1) % projects.length];
+
+  return (
+    <article className="mx-auto max-w-4xl px-6 pb-24 pt-28">
+      <Reveal>
+        <a
+          href="#projects"
+          className="group inline-flex items-center gap-2 text-sm font-semibold text-slate-500 transition-colors hover:text-brand-600 dark:text-slate-400 dark:hover:text-brand-400"
+        >
+          <ArrowLeft
+            size={16}
+            className="transition-transform group-hover:-translate-x-0.5"
+          />
+          Proyectos
+        </a>
+
+        {/* Cabecera */}
+        <header className="mt-6">
+          <p className="flex items-center gap-2 font-display text-xs font-semibold uppercase tracking-[0.2em] text-brand-600 dark:text-brand-400">
+            {project.year && <span className="tabular-nums">{project.year}</span>}
+            {project.year && project.role && <span aria-hidden>·</span>}
+            {project.role && <span>{project.role}</span>}
+          </p>
+          <h1 className="mt-3 font-display text-3xl font-bold tracking-tight text-slate-900 text-balance sm:text-4xl dark:text-white">
+            {project.title}
+          </h1>
+          <p className="mt-4 max-w-2xl text-pretty text-lg leading-relaxed text-slate-600 dark:text-slate-400">
+            {project.description}
+          </p>
+        </header>
+
+        {/* Acciones */}
+        {(project.liveUrl || project.repoUrl) && (
+          <div className="mt-6 flex flex-wrap gap-3">
+            {project.liveUrl && (
+              <a
+                href={project.liveUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-brand-600/25 transition-all hover:-translate-y-0.5 hover:bg-brand-500"
+              >
+                <ExternalLink size={16} /> Ver demo
+              </a>
+            )}
+            {project.repoUrl && (
+              <a
+                href={project.repoUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-semibold text-slate-700 transition-colors hover:border-slate-400 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+              >
+                <Github size={16} /> Código
+              </a>
+            )}
+          </div>
+        )}
+      </Reveal>
+
+      {/* Ficha rápida */}
+      {meta.length > 0 && (
+        <Reveal delay={80}>
+          <dl className="mt-10 flex flex-wrap gap-3">
+            {meta.map((m) => (
+              <div
+                key={m.label}
+                className="min-w-[8rem] flex-1 rounded-xl border border-slate-200 p-4 dark:border-slate-800"
+              >
+                <dt className="font-display text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                  {m.label}
+                </dt>
+                <dd className="mt-1 text-sm font-medium text-slate-900 dark:text-white">
+                  {m.value}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </Reveal>
+      )}
+
+      {/* Galería */}
+      <Reveal delay={120}>
+        <Gallery images={images} />
+      </Reveal>
+
+      {/* Contenido */}
+      <div className="mt-14 space-y-12">
+        {overview.length > 0 && (
+          <Reveal>
+            <Block title="El contexto">
+              <div className="space-y-4">
+                {overview.map((p, i) => (
+                  <p key={i} className="leading-relaxed text-slate-600 dark:text-slate-400">
+                    {p}
+                  </p>
+                ))}
+              </div>
+            </Block>
+          </Reveal>
+        )}
+
+        {contributions.length > 0 && (
+          <Reveal>
+            <Block title="Qué aporté">
+              <ul className="space-y-3">
+                {contributions.map((c, i) => (
+                  <li key={i} className="flex gap-3 text-slate-600 dark:text-slate-400">
+                    <Check
+                      size={18}
+                      className="mt-0.5 shrink-0 text-brand-500 dark:text-brand-400"
+                    />
+                    <span className="leading-relaxed">{c}</span>
+                  </li>
+                ))}
+              </ul>
+            </Block>
+          </Reveal>
+        )}
+
+        {outcomes.length > 0 && (
+          <Reveal>
+            <Block title="Resultados">
+              <ul className="space-y-3">
+                {outcomes.map((o, i) => (
+                  <li key={i} className="flex gap-3 text-slate-600 dark:text-slate-400">
+                    <ArrowRight
+                      size={18}
+                      className="mt-0.5 shrink-0 text-brand-500 dark:text-brand-400"
+                    />
+                    <span className="leading-relaxed">{o}</span>
+                  </li>
+                ))}
+              </ul>
+            </Block>
+          </Reveal>
+        )}
+
+        <Reveal>
+          <Block title="Stack">
+            <ul className="flex flex-wrap gap-2">
+              {project.tags.map((tag) => (
+                <li
+                  key={tag}
+                  className="rounded-md bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-300"
+                >
+                  {tag}
+                </li>
+              ))}
+            </ul>
+          </Block>
+        </Reveal>
+      </div>
+
+      {/* Navegación entre proyectos */}
+      {next && next.slug !== slug && (
+        <Reveal>
+          <a
+            href={`#/proyectos/${next.slug}`}
+            className="group mt-16 flex items-center justify-between gap-4 rounded-2xl border border-slate-200 p-6 transition-colors hover:border-brand-500/40 dark:border-slate-800 dark:hover:border-brand-500/40"
+          >
+            <span>
+              <span className="font-display text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                Siguiente proyecto
+              </span>
+              <span className="mt-1 block font-display text-lg font-semibold text-slate-900 dark:text-white">
+                {next.title}
+              </span>
+            </span>
+            <ArrowRight
+              size={20}
+              className="shrink-0 text-slate-400 transition-transform group-hover:translate-x-1 group-hover:text-brand-500"
+            />
+          </a>
+        </Reveal>
+      )}
+    </article>
+  );
+}
+
+/** Encabezado de bloque con línea de acento. */
+function Block({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <section>
+      <h2 className="font-display text-lg font-bold text-slate-900 dark:text-white">
+        {title}
+      </h2>
+      <div className="mt-2 h-0.5 w-10 rounded-full bg-gradient-to-r from-brand-500 to-accent-500" />
+      <div className="mt-5">{children}</div>
+    </section>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Galería de capturas + visor a pantalla completa                            */
+/* -------------------------------------------------------------------------- */
+
+function Gallery({ images }: { images: ProjectImage[] }) {
+  const [active, setActive] = useState<number | null>(null);
+
+  // Cierra el visor con Escape.
+  useEffect(() => {
+    if (active === null) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setActive(null);
+      if (e.key === 'ArrowRight') setActive((i) => (i === null ? i : (i + 1) % images.length));
+      if (e.key === 'ArrowLeft')
+        setActive((i) => (i === null ? i : (i - 1 + images.length) % images.length));
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [active, images.length]);
+
+  if (images.length === 0) {
+    return (
+      <div className="mt-10 grid place-items-center rounded-2xl border border-dashed border-slate-300 bg-slate-50 py-14 dark:border-slate-700 dark:bg-slate-900/50">
+        <div className="flex flex-col items-center gap-2 text-slate-400 dark:text-slate-500">
+          <ImageOff size={24} />
+          <p className="text-sm font-medium">Capturas próximamente</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <div
+        className={`mt-10 grid gap-4 ${
+          images.length === 1 ? 'grid-cols-1' : 'sm:grid-cols-2'
+        }`}
+      >
+        {images.map((img, i) => (
+          <button
+            key={img.src}
+            type="button"
+            onClick={() => setActive(i)}
+            className="group relative aspect-[16/10] overflow-hidden rounded-xl border border-slate-200 bg-slate-100 dark:border-slate-800 dark:bg-slate-900"
+          >
+            <GalleryImage img={img} />
+          </button>
+        ))}
+      </div>
+
+      {active !== null && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/90 p-4 backdrop-blur-sm"
+          onClick={() => setActive(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-label={images[active].alt}
+        >
+          <button
+            type="button"
+            aria-label="Cerrar"
+            className="absolute right-4 top-4 rounded-full bg-white/10 p-2 text-white transition-colors hover:bg-white/20"
+          >
+            <X size={20} />
+          </button>
+          <img
+            src={images[active].src}
+            alt={images[active].alt}
+            className="max-h-[85vh] max-w-full rounded-lg object-contain"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
+    </>
+  );
+}
+
+/** Imagen con degradado de reserva si el archivo no existe todavía. */
+function GalleryImage({ img }: { img: ProjectImage }) {
+  const [failed, setFailed] = useState(false);
+
+  if (failed) {
+    return (
+      <span className="flex h-full w-full flex-col items-center justify-center gap-1.5 text-slate-400 dark:text-slate-500">
+        <ImageOff size={22} />
+        <span className="px-4 text-center text-xs">{img.alt}</span>
+      </span>
+    );
+  }
+
+  return (
+    <img
+      src={img.src}
+      alt={img.alt}
+      loading="lazy"
+      onError={() => setFailed(true)}
+      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+    />
+  );
+}
