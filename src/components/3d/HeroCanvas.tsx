@@ -2,10 +2,12 @@
  * ============================================================================
  *  HeroCanvas — escena 3D interactiva de la sección Hero
  * ----------------------------------------------------------------------------
- *  "Átomo de React" procedural: núcleo icosaédrico con brillo y 3 órbitas
- *  elípticas (a 0° / 60° / 120°, como el logo de React) con un electrón
- *  recorriendo cada una. Rotación suave con OrbitControls (auto-rotate) y
- *  destellos de partículas de fondo.
+ *  Cinta de Möbius procedural (una sola cara, un solo borde) revestida de
+ *  dígitos binarios que fluyen, con un "paquete de datos" luminoso que la
+ *  recorre: da dos vueltas completas antes de volver al punto de partida,
+ *  la propiedad que hace especial a la superficie. Metáfora de un sistema
+ *  full-stack como bucle continuo. Rotación con OrbitControls (auto-rotate)
+ *  y destellos de partículas de fondo.
  *
  *  Responsivo y seguro en móvil:
  *   - En pantallas < lg los controles quedan deshabilitados y el <canvas>
@@ -30,12 +32,12 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import {
   Float,
   Html,
-  Line,
   OrbitControls,
   Sparkles,
   useProgress,
 } from '@react-three/drei';
-import type { Group, Mesh } from 'three';
+import * as THREE from 'three';
+import type { Group, Mesh, PointLight } from 'three';
 
 /* Paleta (coincide con los acentos indigo/violet del resto del sitio). */
 const INDIGO = '#6366f1';
@@ -43,9 +45,9 @@ const VIOLET = '#8b5cf6';
 const SKY = '#38bdf8';
 const RIM = '#c7d2fe';
 
-/* Semiejes de las órbitas elípticas del átomo. */
-const RX = 2.15;
-const RY = 0.82;
+/* Geometría de la cinta: radio central y ancho del listón. */
+const R = 2;
+const STRIP_W = 0.92;
 
 /* -------------------------------------------------------------------------- */
 /*  Hooks de entorno                                                           */
@@ -85,87 +87,157 @@ function usePrefersReducedMotion(): boolean {
 /*  Geometría procedural                                                       */
 /* -------------------------------------------------------------------------- */
 
-/** Puntos de una elipse en el plano XY (para dibujar cada órbita). */
-function ellipsePoints(rx: number, ry: number, segments = 128): [number, number, number][] {
-  const pts: [number, number, number][] = [];
-  for (let i = 0; i <= segments; i++) {
-    const a = (i / segments) * Math.PI * 2;
-    pts.push([Math.cos(a) * rx, Math.sin(a) * ry, 0]);
+/** Punto de la cinta de Möbius para los parámetros (u, v). */
+function mobiusPoint(u: number, v: number): [number, number, number] {
+  const half = u / 2;
+  const rad = R + v * Math.cos(half);
+  return [rad * Math.cos(u), rad * Math.sin(u), v * Math.sin(half)];
+}
+
+/** Malla de la cinta de Möbius (con UV repetido para la textura de bits). */
+function makeMobiusGeometry(uSeg = 260, vSeg = 24): THREE.BufferGeometry {
+  const position: number[] = [];
+  const uv: number[] = [];
+  const index: number[] = [];
+  const row = vSeg + 1;
+
+  for (let i = 0; i <= uSeg; i++) {
+    const u = (i / uSeg) * Math.PI * 2;
+    for (let j = 0; j <= vSeg; j++) {
+      const v = (j / vSeg - 0.5) * STRIP_W;
+      const [x, y, z] = mobiusPoint(u, v);
+      position.push(x, y, z);
+      uv.push((i / uSeg) * 8, j / vSeg);
+    }
   }
-  return pts;
+
+  for (let i = 0; i < uSeg; i++) {
+    for (let j = 0; j < vSeg; j++) {
+      const a = i * row + j;
+      const b = a + row;
+      index.push(a, b, a + 1, b, b + 1, a + 1);
+    }
+  }
+
+  // Cierre del medio giro: el último anillo (u = 2π) coincide en el espacio con
+  // el primero pero con el ancho invertido. Estas caras (de área nula) unen la
+  // topología para que las normales sean continuas, sin costura visible.
+  const last = uSeg * row;
+  for (let j = 0; j < vSeg; j++) {
+    const a = last + j;
+    const a1 = last + j + 1;
+    const b = vSeg - j;
+    const b1 = vSeg - j - 1;
+    index.push(a, b, a1, b, b1, a1);
+  }
+
+  const geometry = new THREE.BufferGeometry();
+  geometry.setIndex(index);
+  geometry.setAttribute('position', new THREE.Float32BufferAttribute(position, 3));
+  geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
+  geometry.computeVertexNormals();
+  return geometry;
 }
 
-interface OrbitProps {
-  /** Giro del plano de la órbita sobre Z (0° / 60° / 120°, como el logo de React). */
-  spin: number;
-  color: string;
-  /** Velocidad angular del electrón. */
-  speed: number;
-  /** Desfase inicial del electrón. */
-  phase: number;
+/** Textura de dígitos binarios dibujada en un <canvas> 2D. */
+function makeBinaryTexture(): THREE.CanvasTexture {
+  const canvas = document.createElement('canvas');
+  canvas.width = 1024;
+  canvas.height = 160;
+  const ctx = canvas.getContext('2d');
+
+  if (ctx) {
+    ctx.fillStyle = '#0b1120';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.font = '700 26px ui-monospace, "DM Mono", monospace';
+    ctx.textBaseline = 'middle';
+    const rows = 6;
+    for (let r = 0; r < rows; r++) {
+      const y = ((r + 0.5) / rows) * canvas.height;
+      for (let x = 4; x < canvas.width; x += 20) {
+        const one = Math.random() > 0.5;
+        ctx.fillStyle = one ? '#c7d2fe' : '#4f46e5';
+        ctx.fillText(one ? '1' : '0', x, y);
+      }
+    }
+  }
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.wrapS = THREE.RepeatWrapping;
+  texture.wrapT = THREE.RepeatWrapping;
+  texture.anisotropy = 4;
+  return texture;
 }
 
-/** Una órbita elíptica con su electrón. */
-function Orbit({ spin, color, speed, phase }: OrbitProps) {
-  const electron = useRef<Mesh>(null);
-  const points = useMemo(() => ellipsePoints(RX, RY), []);
+/**
+ * Cinta de Möbius revestida de bits que fluyen + un paquete de datos que la
+ * recorre (dos vueltas completas para volver al inicio).
+ */
+function MobiusComputer() {
+  const group = useRef<Group>(null);
+  const packet = useRef<Mesh>(null);
+  const packetLight = useRef<PointLight>(null);
 
-  useFrame((state) => {
-    if (!electron.current) return;
-    const t = state.clock.getElapsedTime() * speed + phase;
-    electron.current.position.set(Math.cos(t) * RX, Math.sin(t) * RY, 0);
+  const geometry = useMemo(() => makeMobiusGeometry(), []);
+  const texture = useMemo(() => makeBinaryTexture(), []);
+
+  useEffect(
+    () => () => {
+      geometry.dispose();
+      texture.dispose();
+    },
+    [geometry, texture],
+  );
+
+  useFrame((state, delta) => {
+    const t = state.clock.getElapsedTime();
+
+    // Los bits "corren" a lo largo de la cinta.
+    texture.offset.x -= delta * 0.12;
+
+    if (group.current) {
+      // Gira en su propio plano (nunca de canto) + leve cabeceo.
+      group.current.rotation.z += delta * 0.22;
+      group.current.rotation.x = 0.5 + Math.sin(t * 0.3) * 0.12;
+      group.current.rotation.y = Math.sin(t * 0.22) * 0.18;
+    }
+
+    // Paquete de datos sobre el borde de la cinta.
+    const [x, y, z] = mobiusPoint(t * 0.75, STRIP_W * 0.5);
+    packet.current?.position.set(x, y, z);
+    packetLight.current?.position.set(x, y, z);
   });
 
   return (
-    <group rotation={[0, 0, spin]}>
-      <Line points={points} color={color} lineWidth={2.5} transparent opacity={0.6} />
-      <mesh ref={electron}>
+    <group ref={group} rotation={[0.5, 0, 0]}>
+      {/* Listón con dígitos binarios */}
+      <mesh geometry={geometry}>
+        <meshStandardMaterial
+          map={texture}
+          emissiveMap={texture}
+          emissive="#ffffff"
+          emissiveIntensity={0.6}
+          metalness={0.3}
+          roughness={0.55}
+          side={THREE.DoubleSide}
+        />
+      </mesh>
+      {/* Malla de alambre muy tenue sobre el listón */}
+      <mesh geometry={geometry} scale={1.006}>
+        <meshBasicMaterial color={RIM} wireframe transparent opacity={0.1} />
+      </mesh>
+
+      {/* Paquete de datos + su luz de acompañamiento */}
+      <mesh ref={packet}>
         <sphereGeometry args={[0.13, 20, 20]} />
         <meshStandardMaterial
-          color={color}
-          emissive={color}
-          emissiveIntensity={2.2}
+          color={SKY}
+          emissive={SKY}
+          emissiveIntensity={2.6}
           toneMapped={false}
         />
       </mesh>
-    </group>
-  );
-}
-
-/** Átomo de React: núcleo icosaédrico + 3 órbitas con electrones. */
-function ReactAtom() {
-  const group = useRef<Group>(null);
-  const core = useRef<Mesh>(null);
-
-  useFrame((state) => {
-    const t = state.clock.getElapsedTime();
-    if (group.current) group.current.rotation.z = t * 0.25;
-    if (core.current) core.current.scale.setScalar(1 + Math.sin(t * 2) * 0.05);
-  });
-
-  return (
-    <group ref={group} rotation={[0.32, 0, 0]}>
-      {/* Núcleo emisivo */}
-      <mesh ref={core}>
-        <icosahedronGeometry args={[0.55, 1]} />
-        <meshStandardMaterial
-          color={INDIGO}
-          emissive={INDIGO}
-          emissiveIntensity={1.5}
-          flatShading
-          toneMapped={false}
-        />
-      </mesh>
-      {/* Malla de alambre sobre el núcleo */}
-      <mesh scale={1.06}>
-        <icosahedronGeometry args={[0.55, 1]} />
-        <meshBasicMaterial color={RIM} wireframe transparent opacity={0.35} />
-      </mesh>
-
-      {/* 3 órbitas a 0° / 60° / 120° */}
-      <Orbit spin={0} color={INDIGO} speed={0.9} phase={0} />
-      <Orbit spin={Math.PI / 3} color={VIOLET} speed={1.15} phase={2.1} />
-      <Orbit spin={-Math.PI / 3} color={SKY} speed={0.7} phase={4.2} />
+      <pointLight ref={packetLight} color={SKY} intensity={3} distance={4.5} />
     </group>
   );
 }
@@ -179,25 +251,25 @@ interface SceneProps {
   interactive: boolean;
   /** Auto-rotación (se apaga con prefers-reduced-motion). */
   autoRotate: boolean;
-  /** Escala del átomo (se reduce en móvil para que no se recorte). */
+  /** Escala del objeto (se reduce en móvil para que no se recorte). */
   scale: number;
 }
 
 function Scene({ interactive, autoRotate, scale }: SceneProps) {
   return (
     <>
-      <ambientLight intensity={0.5} />
-      <pointLight position={[3, 2, 4]} intensity={2} color={RIM} />
-      <pointLight position={[-4, -2, -3]} intensity={1.5} color={VIOLET} />
+      <ambientLight intensity={0.6} />
+      <pointLight position={[4, 3, 5]} intensity={2.2} color={INDIGO} />
+      <pointLight position={[-5, -2, -3]} intensity={1.6} color={VIOLET} />
 
-      <Float speed={1.2} rotationIntensity={0.15} floatIntensity={0.6}>
+      <Float speed={1.1} rotationIntensity={0.12} floatIntensity={0.5}>
         <group scale={scale}>
-          <ReactAtom />
+          <MobiusComputer />
         </group>
       </Float>
 
       {/* Destellos de partículas en el fondo */}
-      <Sparkles count={80} scale={[11, 7, 7]} size={2.2} speed={0.3} color={RIM} />
+      <Sparkles count={70} scale={[11, 7, 7]} size={2} speed={0.3} color={RIM} />
 
       <OrbitControls
         makeDefault
@@ -275,13 +347,13 @@ export function HeroCanvas() {
           className={isMobile ? 'pointer-events-none' : ''}
           dpr={[1, 2]}
           gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
-          camera={{ position: [0, 0.3, 6.3], fov: 42 }}
+          camera={{ position: [0, 0.4, 8], fov: 42 }}
         >
           <Suspense fallback={<CanvasLoader />}>
             <Scene
               interactive={!isMobile}
               autoRotate={!reducedMotion}
-              scale={isMobile ? 0.82 : 1}
+              scale={isMobile ? 0.78 : 1}
             />
           </Suspense>
         </Canvas>
