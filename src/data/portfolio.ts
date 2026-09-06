@@ -18,6 +18,7 @@ import {
   Wrench,
   Rocket,
   Sparkles,
+  Workflow,
   ScanSearch,
   Droplets,
   type LucideIcon,
@@ -120,7 +121,7 @@ export const personal = {
   /** Iniciales para el logo */
   initials: 'SC',
   /** Rol profesional principal */
-  role: 'Ingeniero Informático · Full Stack & Mobile Developer',
+  role: 'Ingeniero Informático · Desarrollador Full-Stack',
   /** Ubicación (ciudad, país) — ajústala si hace falta */
   location: 'Valle del Cauca, Colombia',
   /** Email de contacto */
@@ -129,11 +130,11 @@ export const personal = {
   availability: 'Disponible para nuevos proyectos',
   /** Presentación del hero (2-3 líneas) */
   summary:
-    'Ingeniero Informático enfocado en desarrollo web full-stack y móvil. Construyo plataformas de extremo a extremo con React, TypeScript y Supabase, y aplicaciones nativas Android en Kotlin, integrando IA y datos cuando aportan valor real al producto.',
+    'Ingeniero Informático enfocado en desarrollo web full-stack: construyo plataformas de extremo a extremo —de la base de datos y las APIs a la interfaz— con React y TypeScript en el frontend y PHP/Laravel o Supabase en el backend. También desarrollo apps Android nativas en Kotlin e integro IA cuando aporta valor real al producto.',
   /**
    * Stack principal — se muestra como pills en el hero.
    */
-  stack: ['React', 'TypeScript', 'Tailwind CSS', 'Supabase', 'Kotlin', 'PostgreSQL'],
+  stack: ['React', 'TypeScript', 'Tailwind CSS', 'PHP / Laravel', 'Supabase', 'PostgreSQL', 'Kotlin'],
   /** Ruta al CV. Coloca el archivo en `public/cv.pdf`. */
   resumeUrl: '/cv.pdf',
 };
@@ -167,8 +168,8 @@ export const navItems: NavItem[] = [
 export const about: { paragraphs: string[]; highlights: Highlight[] } = {
   // Uno o varios párrafos de biografía / trayectoria.
   paragraphs: [
-    'Soy Ingeniero Informático y me dedico al desarrollo full-stack y móvil. En web trabajo el ciclo completo —modelado de datos en PostgreSQL/Supabase, APIs e interfaz en React con TypeScript— y en móvil desarrollo aplicaciones nativas Android con Kotlin.',
-    'Me interesan los proyectos donde el software resuelve un problema concreto: evaluación logística con apoyo de IA, monitoreo de la calidad del agua en campo o herramientas internas que ahorran horas de trabajo manual.',
+    'Soy Ingeniero Informático y me dedico sobre todo al desarrollo web full-stack. Trabajo el ciclo completo: modelado de datos, APIs y lógica de negocio en el backend (PHP/Laravel, Supabase/PostgreSQL) e interfaz en React con TypeScript. También desarrollo apps Android nativas con Kotlin.',
+    'Me interesan los proyectos donde el software resuelve un problema concreto: evaluación logística con apoyo de IA, plataformas para procesos institucionales o herramientas internas que ahorran horas de trabajo manual.',
   ],
 
   // Aspectos destacados en formato tarjeta.
@@ -180,10 +181,10 @@ export const about: { paragraphs: string[]; highlights: Highlight[] } = {
         'Desde el modelo de datos y las APIs hasta la interfaz final y el despliegue en producción.',
     },
     {
-      icon: Smartphone,
-      title: 'Móvil nativo con Kotlin',
+      icon: Workflow,
+      title: 'Del requerimiento al producto',
       description:
-        'Aplicaciones Android para trabajo de campo: captura de datos offline, sincronización y flujos de inspección.',
+        'Traduzco necesidades de usuarios y procesos en soluciones: análisis, diseño de flujos, implementación e iteración.',
     },
     {
       icon: Sparkles,
@@ -246,38 +247,40 @@ export const projects: Project[] = [
     ],
   },
   {
-    slug: 'uesvalle-app',
-    title: 'UESVALLE App',
+    slug: 'uesvalle',
+    title: 'UESValle',
     description:
-      'App Android nativa en Kotlin y Jetpack Compose para las cuadrillas de saneamiento de UESVALLE. Digitaliza la inspección de la calidad del agua en campo —registro de muestras, checklists y captura sin conexión— y sincroniza los datos al recuperar la señal, sustituyendo el registro en papel.',
-    tags: ['Kotlin', 'Android', 'Jetpack Compose', 'Room', 'PostgreSQL'],
+      'Plataforma web y app Android para el ecosistema digital de UESValle. En web participé en todo el ciclo —análisis de requerimientos, diseño de interfaces, frontend y backend en PHP/Laravel e integración de servicios— y en móvil desarrollé funcionalidades de la app nativa en Kotlin, siempre partiendo de necesidades reales de usuarios y procesos institucionales.',
+    tags: ['PHP', 'Laravel', 'MySQL', 'Kotlin', 'Android', 'REST'],
     featured: true,
-    year: '2023',
-    role: 'Desarrollo Android',
+    year: '2023', // TODO: confirma el año o rango
+    role: 'Full-stack + Android',
     icon: Droplets,
     cover: 'from-teal-500 via-cyan-500 to-sky-600',
-    timeline: 'TODO: p. ej. «4 meses · 2023»',
-    team: 'TODO: p. ej. «Proyecto individual» o «Equipo de 2»',
-    context: 'UESVALLE (servicios de saneamiento del Valle del Cauca)',
-    // repoUrl: 'https://github.com/Lecho67/uesvalle-app',
+    timeline: 'TODO: p. ej. «6 meses · 2023»',
+    team: 'Equipo de desarrollo multidisciplinario',
+    context: 'UESValle — saneamiento del Valle del Cauca',
+    // repoUrl: 'https://github.com/Lecho67/...',
     overview: [
-      'Las cuadrillas que inspeccionan la calidad del agua trabajan en zonas donde muchas veces no hay cobertura. El registro se hacía en papel y luego había que transcribirlo en oficina, lo que retrasaba los reportes e introducía errores.',
-      'La app lleva todo el flujo de inspección al teléfono: se puede trabajar sin conexión y los datos suben solos cuando el dispositivo vuelve a tener red.',
+      'UESValle mantiene un conjunto de herramientas digitales —web y móviles— para sus procesos institucionales y para la atención a los usuarios. El trabajo consistió en construir nuevas funcionalidades y hacer evolucionar las existentes, siempre partiendo de las necesidades reales de los usuarios y de los procesos de la entidad.',
+      'Cada solución seguía el mismo recorrido: entender la necesidad, analizar los requerimientos, definir una solución funcional y técnica, diseñar los flujos e interfaces, desarrollarla, integrarla con el resto del sistema y ajustarla con la retroalimentación recibida.',
     ],
     contributions: [
-      'Desarrollo de la app Android nativa en Kotlin con interfaz en Jetpack Compose.',
-      'Persistencia local con Room para que la captura funcione 100 % sin conexión.',
-      'Sincronización automática con el backend (PostgreSQL) al recuperar la conexión, con manejo de conflictos.',
-      'Flujos guiados de registro de muestras y checklists de inspección para estandarizar el trabajo en campo.',
+      'Análisis de requerimientos: traducir necesidades de negocio y de usuarios en especificaciones funcionales y técnicas para el equipo.',
+      'Diseño y desarrollo de interfaces web con foco en usabilidad, accesibilidad, consistencia visual y adaptación a distintos dispositivos.',
+      'Desarrollo frontend y backend en PHP/Laravel de funcionalidades en varios módulos de la plataforma, con su lógica de negocio y gestión de información.',
+      'Integración entre frontend, servicios backend y fuentes de datos: consumo de APIs, procesamiento de datos y manejo de estados y respuestas.',
+      'Desarrollo de funcionalidades para la app Android nativa en Kotlin.',
+      'Mejora continua de funcionalidades existentes y resolución de problemas técnicos durante el ciclo de desarrollo.',
     ],
     outcomes: [
-      'Elimina la doble digitación: del papel a la transcripción en oficina.',
-      'TODO: dato concreto, p. ej. «N inspecciones registradas» o «reduce en X el tiempo hasta el reporte».',
-      'Datos más completos y consistentes gracias a los formularios guiados.',
+      'Herramientas digitales que agilizan procesos internos y facilitan la interacción de los usuarios con los servicios de la entidad.',
+      'Un enfoque integral en cada solución: análisis funcional, experiencia de usuario y desarrollo técnico.',
+      'Sistemas mantenibles y preparados para seguir evolucionando con nuevos requerimientos.',
+      'TODO: añade un dato concreto si lo tienes (nº de módulos, usuarios, reducción de tiempos…).',
     ],
     images: [
-      // { src: '/proyectos/uesvalle-registro.png', alt: 'Pantalla de registro de una muestra' },
-      // { src: '/proyectos/uesvalle-checklist.png', alt: 'Checklist de inspección' },
+      // { src: '/proyectos/uesvalle-1.png', alt: 'Descripción de la captura' },
     ],
   },
 ];
@@ -300,12 +303,12 @@ export const skillCategories: SkillCategory[] = [
   {
     title: 'Backend & datos',
     icon: Database,
-    skills: ['Supabase', 'PostgreSQL', 'Node.js', 'REST', 'Auth / RLS'],
+    skills: ['PHP', 'Laravel', 'Node.js', 'Supabase', 'PostgreSQL', 'MySQL', 'REST', 'Auth / RLS'],
   },
   {
     title: 'Móvil',
     icon: Smartphone,
-    skills: ['Kotlin', 'Android SDK', 'Jetpack Compose', 'Room', 'Coroutines'],
+    skills: ['Kotlin', 'Android SDK', 'Jetpack Compose', 'Room'],
   },
   {
     title: 'Herramientas',
