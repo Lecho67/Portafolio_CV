@@ -29,7 +29,7 @@ export function Certifications() {
                 }`}
               >
                 <div className="flex items-start justify-between gap-3">
-                  <span className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-gradient-to-br from-brand-500/10 to-accent-500/10 text-brand-500 dark:text-brand-400">
+                  <span className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-brand-500/10 text-brand-500 dark:text-brand-400">
                     <BadgeCheck size={22} />
                   </span>
                   <span className="rounded-full border border-slate-200 px-2.5 py-0.5 font-display text-xs font-medium tabular-nums text-slate-500 dark:border-slate-700 dark:text-slate-400">

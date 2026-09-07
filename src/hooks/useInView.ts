@@ -38,15 +38,7 @@ export function useInView<T extends HTMLElement = HTMLDivElement>(
     }, options);
 
     observer.observe(node);
-
-    // Red de seguridad: si por cualquier motivo el observer no dispara,
-    // el contenido nunca debe quedar invisible.
-    const fallback = window.setTimeout(() => setInView(true), 3000);
-
-    return () => {
-      observer.disconnect();
-      window.clearTimeout(fallback);
-    };
+    return () => observer.disconnect();
     // Las `options` se fijan en el primer render (objeto literal por defecto).
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

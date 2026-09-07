@@ -46,7 +46,7 @@ export function Navbar({ theme, onToggleTheme }: NavbarProps) {
           href="#top"
           className="flex items-center gap-2.5 font-display font-bold text-slate-900 dark:text-white"
         >
-          <span className="grid h-9 w-9 place-items-center rounded-lg bg-gradient-to-br from-brand-500 to-accent-500 text-sm text-white shadow-sm shadow-brand-500/30">
+          <span className="grid h-9 w-9 place-items-center rounded-lg bg-brand-600 text-sm text-white">
             {personal.initials}
           </span>
           <span className="hidden sm:block">{personal.name}</span>
@@ -69,7 +69,7 @@ export function Navbar({ theme, onToggleTheme }: NavbarProps) {
               >
                 {item.label}
                 <span
-                  className={`absolute inset-x-3 -bottom-0.5 h-0.5 rounded-full bg-gradient-to-r from-brand-500 to-accent-500 transition-transform duration-300 ${
+                  className={`absolute inset-x-3 -bottom-0.5 h-0.5 rounded-full bg-brand-500 transition-transform duration-300 ${
                     isActive ? 'scale-x-100' : 'scale-x-0'
                   }`}
                   aria-hidden

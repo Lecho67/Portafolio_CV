@@ -16,9 +16,10 @@ import {
   Database,
   Smartphone,
   Wrench,
-  Rocket,
   Sparkles,
   Workflow,
+  Layers,
+  Building2,
   ScanSearch,
   Droplets,
   type LucideIcon,
@@ -40,10 +41,16 @@ export interface NavItem {
   href: `#${string}`;
 }
 
-export interface Highlight {
+export interface FocusArea {
   icon: LucideIcon;
   title: string;
   description: string;
+}
+
+export interface Tech {
+  name: string;
+  /** Clave del logo en `TechIcon` (p. ej. 'react'). Opcional. */
+  icon?: string;
 }
 
 export interface ProjectImage {
@@ -126,15 +133,23 @@ export const personal = {
   location: 'Valle del Cauca, Colombia',
   /** Email de contacto */
   email: 'simoncolonia67@gmail.com',
-  /** Texto del badge de estado en el hero */
-  availability: 'Disponible para nuevos proyectos',
   /** Presentación del hero (2-3 líneas) */
   summary:
-    'Ingeniero Informático enfocado en desarrollo web full-stack: construyo plataformas de extremo a extremo —de la base de datos y las APIs a la interfaz— con React y TypeScript en el frontend y PHP/Laravel o Supabase en el backend. También desarrollo apps Android nativas en Kotlin e integro IA cuando aporta valor real al producto.',
+    'Ingeniero Informático especializado en desarrollo web full-stack. Construyo plataformas de extremo a extremo con React y TypeScript en el frontend y PHP/Laravel o Supabase en el backend. También trabajo Android nativo con Kotlin.',
   /**
-   * Stack principal — se muestra como pills en el hero.
+   * Stack principal — pills con logo en el hero. El `icon` referencia una
+   * clave de `src/components/TechIcon.tsx` (déjalo sin `icon` si no hay logo).
    */
-  stack: ['React', 'TypeScript', 'Tailwind CSS', 'PHP / Laravel', 'Supabase', 'PostgreSQL', 'Kotlin'],
+  stack: [
+    { name: 'React', icon: 'react' },
+    { name: 'TypeScript', icon: 'typescript' },
+    { name: 'Tailwind CSS', icon: 'tailwindcss' },
+    { name: 'Laravel', icon: 'laravel' },
+    { name: 'PHP', icon: 'php' },
+    { name: 'Supabase', icon: 'supabase' },
+    { name: 'PostgreSQL', icon: 'postgresql' },
+    { name: 'Kotlin', icon: 'kotlin' },
+  ] as Tech[],
   /** Ruta al CV. Coloca el archivo en `public/cv.pdf`. */
   resumeUrl: '/cv.pdf',
 };
@@ -165,35 +180,57 @@ export const navItems: NavItem[] = [
 /*  SECCIÓN "SOBRE MÍ"                                                         */
 /* -------------------------------------------------------------------------- */
 
-export const about: { paragraphs: string[]; highlights: Highlight[] } = {
+export const about: { paragraphs: string[] } = {
   // Uno o varios párrafos de biografía / trayectoria.
   paragraphs: [
     'Soy Ingeniero Informático y me dedico sobre todo al desarrollo web full-stack. Trabajo el ciclo completo: modelado de datos, APIs y lógica de negocio en el backend (PHP/Laravel, Supabase/PostgreSQL) e interfaz en React con TypeScript. También desarrollo apps Android nativas con Kotlin.',
     'Me interesan los proyectos donde el software resuelve un problema concreto: evaluación logística con apoyo de IA, plataformas para procesos institucionales o herramientas internas que ahorran horas de trabajo manual.',
   ],
-
-  // Aspectos destacados en formato tarjeta.
-  highlights: [
-    {
-      icon: Rocket,
-      title: 'Producto de punta a punta',
-      description:
-        'Desde el modelo de datos y las APIs hasta la interfaz final y el despliegue en producción.',
-    },
-    {
-      icon: Workflow,
-      title: 'Del requerimiento al producto',
-      description:
-        'Traduzco necesidades de usuarios y procesos en soluciones: análisis, diseño de flujos, implementación e iteración.',
-    },
-    {
-      icon: Sparkles,
-      title: 'Integración de IA y datos',
-      description:
-        'Uso de modelos de lenguaje y análisis de datos para asistir decisiones dentro del producto.',
-    },
-  ],
 };
+
+/* -------------------------------------------------------------------------- */
+/*  ÁREAS DE ENFOQUE  —  "en qué me enfoco / soy bueno"                        */
+/*  Se muestran como tarjetas dentro de la sección "Sobre mí".                */
+/* -------------------------------------------------------------------------- */
+
+export const focusAreas: FocusArea[] = [
+  {
+    icon: Layers,
+    title: 'Aplicaciones web full-stack',
+    description:
+      'Plataformas completas de extremo a extremo: base de datos, APIs, lógica de negocio e interfaz.',
+  },
+  {
+    icon: Building2,
+    title: 'Plataformas para procesos institucionales',
+    description:
+      'Digitalización de trámites y flujos internos: formularios, expedientes, roles y trazabilidad.',
+  },
+  {
+    icon: Workflow,
+    title: 'Automatización y herramientas internas',
+    description:
+      'Software a medida que sustituye trabajo manual repetitivo y ahorra horas al equipo.',
+  },
+  {
+    icon: Sparkles,
+    title: 'IA aplicada al producto',
+    description:
+      'Resúmenes, clasificación y asistencia con modelos de lenguaje donde aportan valor real.',
+  },
+  {
+    icon: Smartphone,
+    title: 'Apps Android nativas',
+    description:
+      'Kotlin y Jetpack Compose para trabajo de campo: captura de datos, offline y sincronización.',
+  },
+  {
+    icon: Database,
+    title: 'Modelado de datos y APIs',
+    description:
+      'Esquemas relacionales en PostgreSQL/MySQL, APIs REST y control de acceso por rol.',
+  },
+];
 
 /* -------------------------------------------------------------------------- */
 /*  PROYECTOS                                                                  */
@@ -354,5 +391,5 @@ export const certifications: Certification[] = [
 export const contact = {
   heading: '¿Trabajamos juntos?',
   message:
-    'Estoy abierto a nuevas oportunidades en desarrollo web full-stack y móvil. Si tienes un proyecto en mente o solo quieres saludar, escríbeme y te respondo lo antes posible.',
+    'Si tienes un proyecto en mente o quieres hablar sobre una oportunidad, escríbeme y te respondo pronto.',
 };

@@ -27,8 +27,8 @@ export function Reveal({ children, as = 'div', delay = 0, className = '' }: Reve
       ref,
       style: { transitionDelay: inView ? `${delay}ms` : '0ms' },
       className: [
-        'transition-[opacity,transform] duration-700 ease-out motion-reduce:transition-none',
-        inView ? 'opacity-100 translate-y-0' : 'translate-y-6 opacity-0',
+        'transition-[opacity,transform] duration-500 ease-out motion-reduce:transition-none',
+        inView ? 'opacity-100 translate-y-0' : 'translate-y-4 opacity-0',
         className,
       ].join(' '),
     },

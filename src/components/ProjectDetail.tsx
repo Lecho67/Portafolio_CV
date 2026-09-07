@@ -39,7 +39,7 @@ export function ProjectDetail({ slug }: ProjectDetailProps) {
         </p>
         <a
           href="#projects"
-          className="mt-6 inline-flex items-center gap-2 rounded-lg bg-brand-600 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-500"
+          className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-brand-600 hover:underline dark:text-brand-400"
         >
           <ArrowLeft size={16} /> Volver a proyectos
         </a>
@@ -98,7 +98,7 @@ export function ProjectDetail({ slug }: ProjectDetailProps) {
                 href={project.liveUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-brand-600/25 transition-all hover:-translate-y-0.5 hover:bg-brand-500"
+                className="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-500"
               >
                 <ExternalLink size={16} /> Ver demo
               </a>
@@ -237,15 +237,14 @@ export function ProjectDetail({ slug }: ProjectDetailProps) {
   );
 }
 
-/** Encabezado de bloque con línea de acento. */
+/** Bloque de contenido con título. */
 function Block({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section>
-      <h2 className="font-display text-lg font-bold text-slate-900 dark:text-white">
+      <h2 className="font-display text-sm font-semibold uppercase tracking-[0.15em] text-slate-500 dark:text-slate-400">
         {title}
       </h2>
-      <div className="mt-2 h-0.5 w-10 rounded-full bg-gradient-to-r from-brand-500 to-accent-500" />
-      <div className="mt-5">{children}</div>
+      <div className="mt-4">{children}</div>
     </section>
   );
 }
@@ -257,7 +256,7 @@ function Block({ title, children }: { title: string; children: ReactNode }) {
 function Gallery({ images }: { images: ProjectImage[] }) {
   const [active, setActive] = useState<number | null>(null);
 
-  // Cierra el visor con Escape.
+  // Con el visor abierto: navegación por teclado y bloqueo del scroll de fondo.
   useEffect(() => {
     if (active === null) return;
     const onKey = (e: KeyboardEvent) => {
@@ -267,7 +266,12 @@ function Gallery({ images }: { images: ProjectImage[] }) {
         setActive((i) => (i === null ? i : (i - 1 + images.length) % images.length));
     };
     window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      document.body.style.overflow = prevOverflow;
+    };
   }, [active, images.length]);
 
   if (images.length === 0) {
@@ -311,6 +315,7 @@ function Gallery({ images }: { images: ProjectImage[] }) {
           <button
             type="button"
             aria-label="Cerrar"
+            onClick={() => setActive(null)}
             className="absolute right-4 top-4 rounded-full bg-white/10 p-2 text-white transition-colors hover:bg-white/20"
           >
             <X size={20} />

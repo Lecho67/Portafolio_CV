@@ -1,22 +1,13 @@
 /**
- * ============================================================================
- *  HeroCanvas — escena 3D interactiva de la sección Hero
- * ----------------------------------------------------------------------------
- *  Cinta de Möbius procedural (una sola cara, un solo borde) revestida de
- *  dígitos binarios que fluyen. Un cabezal de lectura estilo máquina de
- *  Turing recorre la "cinta infinita": da dos vueltas completas antes de
- *  volver al punto de partida, la propiedad que hace especial a la
- *  superficie. Rotación con OrbitControls (auto-rotate) y destellos de
- *  partículas de fondo.
+ * HeroCanvas — escena 3D que hace de fondo a sangre de la sección Hero.
  *
- *  Responsivo y seguro en móvil:
- *   - En pantallas < lg los controles quedan deshabilitados y el <canvas>
- *     recibe `pointer-events: none`, de modo que el gesto de scroll nunca se
- *     queda "atrapado" dentro del lienzo.
- *   - Respeta `prefers-reduced-motion` (desactiva el auto-rotate).
- *   - Si el navegador no puede crear el contexto WebGL, se muestra un
- *     fallback estático (CanvasErrorBoundary).
- * ============================================================================
+ * Cinta de Möbius procedural revestida de dígitos binarios que fluyen, con un
+ * cabezal de lectura que la recorre. Solo auto-rotación (sin controles): es un
+ * elemento decorativo detrás del texto, con `pointer-events: none`.
+ *
+ * - Respeta `prefers-reduced-motion` (para el giro).
+ * - Pausa el bucle de render cuando la sección sale de pantalla.
+ * - Si no hay WebGL, no renderiza nada (el degradado del Hero cubre el hueco).
  */
 
 import {
@@ -29,23 +20,15 @@ import {
   type ReactNode,
 } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import {
-  Float,
-  Html,
-  OrbitControls,
-  Sparkles,
-  useProgress,
-} from '@react-three/drei';
+import { Float } from '@react-three/drei';
 import * as THREE from 'three';
 import type { Group, PointLight } from 'three';
 
 /* Paleta (coincide con los acentos brand/accent —emerald/teal— del sitio).
-   Si cambias `brand`/`accent` en tailwind.config.js, actualiza también estos
-   hexadecimales para mantener la coherencia visual. */
+   Si cambias `brand`/`accent` en tailwind.config.js, actualiza estos hex. */
 const BRAND = '#10b981'; // emerald-500
-const ACCENT = '#14b8a6'; // teal-500
 const SCAN = '#22d3ee'; // cyan-400 — haz de lectura del cabezal
-const RIM = '#a7f3d0'; // emerald-200 — luz de contorno / partículas
+const RIM = '#a7f3d0'; // emerald-200 — luz de contorno
 
 /* Geometría de la cinta: radio central y ancho del listón. */
 const R = 2;
@@ -58,7 +41,6 @@ const STRIP_W = 0.92;
 /** `true` mientras el viewport sea de tipo móvil/tablet (< 1024px). */
 function useIsMobile(): boolean {
   const [isMobile, setIsMobile] = useState(false);
-
   useEffect(() => {
     const mq = window.matchMedia('(max-width: 1023px)');
     const update = () => setIsMobile(mq.matches);
@@ -66,14 +48,12 @@ function useIsMobile(): boolean {
     mq.addEventListener('change', update);
     return () => mq.removeEventListener('change', update);
   }, []);
-
   return isMobile;
 }
 
-/** Respeta la preferencia de "reducir movimiento" del sistema operativo. */
+/** Respeta la preferencia de "reducir movimiento" del sistema. */
 function usePrefersReducedMotion(): boolean {
   const [reduced, setReduced] = useState(false);
-
   useEffect(() => {
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
     const update = () => setReduced(mq.matches);
@@ -81,8 +61,21 @@ function usePrefersReducedMotion(): boolean {
     mq.addEventListener('change', update);
     return () => mq.removeEventListener('change', update);
   }, []);
-
   return reduced;
+}
+
+/** `true` mientras el elemento esté (al menos en parte) en el viewport. */
+function useInViewport<T extends HTMLElement>() {
+  const ref = useRef<T>(null);
+  const [visible, setVisible] = useState(true);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return;
+    const io = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting));
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  return { ref, visible };
 }
 
 /* -------------------------------------------------------------------------- */
@@ -196,11 +189,10 @@ function writeSurfaceFrame(u: number, f: SurfaceFrame): void {
 }
 
 /**
- * Cinta de Möbius revestida de bits que fluyen. Un cabezal de lectura —como el
- * de una máquina de Turing— recorre la cinta escaneando la "cinta infinita":
- * da dos vueltas completas antes de volver al punto de partida.
+ * Cinta de Möbius revestida de bits que fluyen, con un cabezal de lectura que
+ * la recorre como el de una máquina de Turing.
  */
-function MobiusComputer() {
+function MobiusComputer({ reducedMotion }: { reducedMotion: boolean }) {
   const group = useRef<Group>(null);
   const head = useRef<Group>(null);
   const headLight = useRef<PointLight>(null);
@@ -233,14 +225,9 @@ function MobiusComputer() {
     texture.offset.x -= delta * 0.12;
 
     if (group.current) {
-      // Gira en su propio plano (nunca de canto) + leve cabeceo.
-      group.current.rotation.z += delta * 0.22;
-      // Cabeceo automático + parallax suave hacia el cursor (state.pointer va
-      // de -1 a 1). En móvil el puntero queda en (0,0): sin efecto.
-      const targetX = 0.5 + Math.sin(t * 0.3) * 0.12 - state.pointer.y * 0.18;
-      const targetY = Math.sin(t * 0.22) * 0.18 + state.pointer.x * 0.25;
-      group.current.rotation.x = THREE.MathUtils.lerp(group.current.rotation.x, targetX, 0.05);
-      group.current.rotation.y = THREE.MathUtils.lerp(group.current.rotation.y, targetY, 0.05);
+      if (!reducedMotion) group.current.rotation.z += delta * 0.18;
+      group.current.rotation.x = 0.5 + Math.sin(t * 0.3) * 0.1;
+      group.current.rotation.y = Math.sin(t * 0.22) * 0.15;
     }
 
     // El cabezal se apoya en la superficie y se orienta con ella.
@@ -272,9 +259,8 @@ function MobiusComputer() {
         <meshBasicMaterial color={RIM} wireframe transparent opacity={0.1} />
       </mesh>
 
-      {/* Cabezal de lectura: abraza la cinta y la escanea */}
+      {/* Cabezal de lectura */}
       <group ref={head}>
-        {/* Barra superior */}
         <mesh position={[0, 0.16, 0]}>
           <boxGeometry args={[STRIP_W * 1.2, 0.06, 0.12]} />
           <meshStandardMaterial
@@ -285,7 +271,6 @@ function MobiusComputer() {
             emissiveIntensity={0.35}
           />
         </mesh>
-        {/* Rieles laterales que envuelven los bordes */}
         {[-1, 1].map((dir) => (
           <mesh key={dir} position={[dir * STRIP_W * 0.6, 0, 0]}>
             <boxGeometry args={[0.07, 0.38, 0.14]} />
@@ -319,80 +304,36 @@ function MobiusComputer() {
 /* -------------------------------------------------------------------------- */
 
 interface SceneProps {
-  /** En móvil los controles se desactivan para no bloquear el scroll. */
-  interactive: boolean;
-  /** Auto-rotación (se apaga con prefers-reduced-motion). */
-  autoRotate: boolean;
-  /** Escala del objeto (se reduce en móvil para que no se recorte). */
+  /** Escala del objeto (menor en móvil). */
   scale: number;
+  /** Desplazamiento horizontal para dejar espacio al texto del Hero. */
+  offsetX: number;
+  reducedMotion: boolean;
 }
 
-function Scene({ interactive, autoRotate, scale }: SceneProps) {
+function Scene({ scale, offsetX, reducedMotion }: SceneProps) {
   return (
     <>
-      <ambientLight intensity={0.6} />
-      <pointLight position={[4, 3, 5]} intensity={2.2} color={BRAND} />
-      <pointLight position={[-5, -2, -3]} intensity={1.6} color={ACCENT} />
+      <ambientLight intensity={0.55} />
+      <pointLight position={[4, 3, 5]} intensity={2.1} color={BRAND} />
+      <pointLight position={[-5, -2, -3]} intensity={1.5} color="#14b8a6" />
 
-      <Float speed={1.1} rotationIntensity={0.12} floatIntensity={0.5}>
-        <group scale={scale}>
-          <MobiusComputer />
-        </group>
-      </Float>
-
-      {/* Destellos de partículas en el fondo */}
-      <Sparkles count={70} scale={[11, 7, 7]} size={2} speed={0.3} color={RIM} />
-
-      <OrbitControls
-        makeDefault
-        enabled={interactive}
-        autoRotate={autoRotate}
-        autoRotateSpeed={0.8}
-        enableZoom={false}
-        enablePan={false}
-        minPolarAngle={Math.PI / 4}
-        maxPolarAngle={Math.PI / 1.7}
-      />
+      <group position={[offsetX, 0, 0]}>
+        <Float speed={1.1} rotationIntensity={0.1} floatIntensity={0.4}>
+          <group scale={scale}>
+            <MobiusComputer reducedMotion={reducedMotion} />
+          </group>
+        </Float>
+      </group>
     </>
   );
 }
 
 /* -------------------------------------------------------------------------- */
-/*  Estados de carga / error                                                   */
+/*  Límite de error (si falla la creación del contexto WebGL)                  */
 /* -------------------------------------------------------------------------- */
 
-/** Indicador de progreso mientras se inicializa la escena (dentro del Canvas). */
-function CanvasLoader() {
-  const { progress } = useProgress();
-  return (
-    <Html center>
-      <div className="flex items-center gap-2 whitespace-nowrap rounded-full border border-slate-300 bg-white/80 px-3 py-1.5 text-xs font-medium text-slate-600 backdrop-blur dark:border-slate-700 dark:bg-slate-900/80 dark:text-slate-300">
-        <span className="h-2 w-2 animate-pulse rounded-full bg-brand-500" />
-        Cargando escena 3D… {Math.round(progress)}%
-      </div>
-    </Html>
-  );
-}
-
-/** Fallback estático si WebGL no está disponible o el render 3D falla. */
-function CanvasFallback() {
-  return (
-    <div className="flex h-full w-full items-center justify-center p-6 text-center">
-      <div>
-        <div className="mx-auto mb-4 h-20 w-28 rounded-lg border-2 border-brand-500/50 bg-brand-500/10" />
-        <p className="max-w-[16rem] text-sm text-slate-500 dark:text-slate-400">
-          Tu navegador no puede mostrar la escena 3D, pero el resto del sitio
-          funciona con normalidad.
-        </p>
-      </div>
-    </div>
-  );
-}
-
-class CanvasErrorBoundary extends Component<
-  { fallback: ReactNode; children: ReactNode },
-  { hasError: boolean }
-> {
+class CanvasErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
   state = { hasError: false };
 
   static getDerivedStateFromError() {
@@ -400,7 +341,7 @@ class CanvasErrorBoundary extends Component<
   }
 
   render() {
-    return this.state.hasError ? this.props.fallback : this.props.children;
+    return this.state.hasError ? null : this.props.children;
   }
 }
 
@@ -411,29 +352,26 @@ class CanvasErrorBoundary extends Component<
 export function HeroCanvas() {
   const isMobile = useIsMobile();
   const reducedMotion = usePrefersReducedMotion();
+  const { ref, visible } = useInViewport<HTMLDivElement>();
 
   return (
-    <div className="relative h-full w-full" style={{ touchAction: 'pan-y' }}>
-      <CanvasErrorBoundary fallback={<CanvasFallback />}>
+    <div ref={ref} className="pointer-events-none absolute inset-0 h-full w-full">
+      <CanvasErrorBoundary>
         <Canvas
-          className={isMobile ? 'pointer-events-none' : ''}
-          dpr={[1, 2]}
+          frameloop={visible ? 'always' : 'never'}
+          dpr={isMobile ? 1 : [1, 1.5]}
           gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
-          camera={{ position: [0, 0.4, 8], fov: 40 }}
+          camera={{ position: [0, 0.4, 8], fov: 42 }}
         >
-          <Suspense fallback={<CanvasLoader />}>
+          <Suspense fallback={null}>
             <Scene
-              interactive={!isMobile}
-              autoRotate={!reducedMotion}
-              scale={isMobile ? 0.78 : 1.05}
+              scale={isMobile ? 0.7 : 0.95}
+              offsetX={isMobile ? 0 : 1.7}
+              reducedMotion={reducedMotion}
             />
           </Suspense>
         </Canvas>
       </CanvasErrorBoundary>
-
-      <p className="pointer-events-none absolute inset-x-0 bottom-3 text-center text-[11px] font-medium uppercase tracking-widest text-slate-400 dark:text-slate-500">
-        {isMobile ? 'Vista previa 3D' : 'Arrastra para rotar'}
-      </p>
     </div>
   );
 }

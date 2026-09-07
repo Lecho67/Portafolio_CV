@@ -13,7 +13,7 @@ export function Projects() {
       index="02"
       kicker="Trabajo"
       title="Proyectos"
-      subtitle="Una selección de trabajos que representan cómo pienso y construyo. Abre cualquiera para ver el detalle."
+      subtitle="Proyectos en los que he trabajado. Abre cualquiera para ver el detalle."
     >
       <div className="grid gap-6 sm:grid-cols-2">
         {projects.map((project, i) => (

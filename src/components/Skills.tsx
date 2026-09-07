@@ -10,14 +10,14 @@ export function Skills() {
       index="03"
       kicker="Stack"
       title="Habilidades técnicas"
-      subtitle="Tecnologías con las que trabajo a diario."
+      subtitle="Tecnologías y herramientas con las que trabajo."
     >
       <div className="grid gap-6 sm:grid-cols-2">
         {skillCategories.map((category, i) => (
           <Reveal key={category.title} delay={i * 80} className="h-full">
             <div className="h-full rounded-xl border border-slate-200 bg-white p-6 transition-colors hover:border-brand-500/40 dark:border-slate-800 dark:bg-slate-900/50 dark:hover:border-brand-500/40">
               <div className="flex items-center gap-3">
-                <span className="grid h-10 w-10 place-items-center rounded-lg bg-gradient-to-br from-brand-500/10 to-accent-500/10 text-brand-500 dark:text-brand-400">
+                <span className="grid h-10 w-10 place-items-center rounded-lg bg-brand-500/10 text-brand-500 dark:text-brand-400">
                   <category.icon size={20} />
                 </span>
                 <h3 className="font-display font-semibold text-slate-900 dark:text-white">

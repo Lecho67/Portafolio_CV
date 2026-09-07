@@ -23,13 +23,7 @@ export function Contact() {
   };
 
   return (
-    <Section
-      id="contact"
-      index="05"
-      kicker="Hablemos"
-      title="Contacto"
-      subtitle={contact.message}
-    >
+    <Section id="contact" title="Contacto" subtitle={contact.message}>
       <div className="grid gap-10 md:grid-cols-2">
         {/* Datos de contacto directos */}
         <Reveal className="space-y-5">
@@ -120,7 +114,7 @@ export function Contact() {
 
             <button
               type="submit"
-              className="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-600/25 transition-all hover:-translate-y-0.5 hover:bg-brand-500"
+              className="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-500"
             >
               <Send size={16} /> Enviar mensaje
             </button>
