@@ -1,8 +1,9 @@
 import { skillCategories } from '../data';
 import { Section } from './Section';
 import { Reveal } from './Reveal';
+import { TechIcon } from './TechIcon';
 
-/** Habilidades técnicas agrupadas por categoría. */
+/** Habilidades técnicas agrupadas por categoría, con logo cuando existe. */
 export function Skills() {
   return (
     <Section
@@ -28,10 +29,14 @@ export function Skills() {
               <ul className="mt-4 flex flex-wrap gap-2">
                 {category.skills.map((skill) => (
                   <li
-                    key={skill}
-                    className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm text-slate-700 transition-colors hover:border-brand-500/50 hover:text-brand-600 dark:border-slate-700 dark:bg-slate-800/50 dark:text-slate-300 dark:hover:border-brand-500/50 dark:hover:text-brand-400"
+                    key={skill.name}
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm text-slate-700 transition-colors hover:border-brand-500/50 hover:text-brand-600 dark:border-slate-700 dark:bg-slate-800/50 dark:text-slate-300 dark:hover:border-brand-500/50 dark:hover:text-brand-400"
                   >
-                    {skill}
+                    <TechIcon
+                      slug={skill.icon}
+                      className="h-3.5 w-3.5 shrink-0 text-slate-400 dark:text-slate-500"
+                    />
+                    {skill.name}
                   </li>
                 ))}
               </ul>

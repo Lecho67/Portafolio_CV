@@ -15,6 +15,7 @@ import {
   Code2,
   Database,
   Smartphone,
+  MonitorSmartphone,
   Wrench,
   Sparkles,
   Workflow,
@@ -43,11 +44,13 @@ export interface NavItem {
 
 export interface FocusArea {
   icon: LucideIcon;
+  /** Etiqueta corta para el chip del hero, p. ej. 'Full-stack' */
+  short: string;
   title: string;
   description: string;
 }
 
-export interface Tech {
+export interface Skill {
   name: string;
   /** Clave del logo en `TechIcon` (p. ej. 'react'). Opcional. */
   icon?: string;
@@ -103,7 +106,7 @@ export interface Project {
 export interface SkillCategory {
   title: string;
   icon: LucideIcon;
-  skills: string[];
+  skills: Skill[];
 }
 
 export interface Certification {
@@ -136,20 +139,6 @@ export const personal = {
   /** Presentación del hero (2-3 líneas) */
   summary:
     'Ingeniero Informático especializado en desarrollo web full-stack. Construyo plataformas de extremo a extremo con React y TypeScript en el frontend y PHP/Laravel o Supabase en el backend. También trabajo Android nativo con Kotlin.',
-  /**
-   * Stack principal — pills con logo en el hero. El `icon` referencia una
-   * clave de `src/components/TechIcon.tsx` (déjalo sin `icon` si no hay logo).
-   */
-  stack: [
-    { name: 'React', icon: 'react' },
-    { name: 'TypeScript', icon: 'typescript' },
-    { name: 'Tailwind CSS', icon: 'tailwindcss' },
-    { name: 'Laravel', icon: 'laravel' },
-    { name: 'PHP', icon: 'php' },
-    { name: 'Supabase', icon: 'supabase' },
-    { name: 'PostgreSQL', icon: 'postgresql' },
-    { name: 'Kotlin', icon: 'kotlin' },
-  ] as Tech[],
   /** Ruta al CV. Coloca el archivo en `public/cv.pdf`. */
   resumeUrl: '/cv.pdf',
 };
@@ -189,46 +178,53 @@ export const about: { paragraphs: string[] } = {
 };
 
 /* -------------------------------------------------------------------------- */
-/*  ÁREAS DE ENFOQUE  —  "en qué me enfoco / soy bueno"                        */
-/*  Se muestran como tarjetas dentro de la sección "Sobre mí".                */
+/*  ÁREAS DE ENFOQUE  —  "en qué me enfoco / soy bueno / me gusta"             */
+/*  `short` sale como chip en el hero; el resto, como tarjeta en "Sobre mí".   */
+/*  Ajusta las descripciones y los ejemplos a lo que realmente has construido. */
 /* -------------------------------------------------------------------------- */
 
 export const focusAreas: FocusArea[] = [
   {
     icon: Layers,
-    title: 'Aplicaciones web full-stack',
+    short: 'Full-stack',
+    title: 'Desarrollo web full-stack',
     description:
-      'Plataformas completas de extremo a extremo: base de datos, APIs, lógica de negocio e interfaz.',
+      'Plataformas de extremo a extremo —base de datos, APIs, lógica de negocio e interfaz—, como la plataforma de evaluación logística BorderCheck AI.',
   },
   {
-    icon: Building2,
-    title: 'Plataformas para procesos institucionales',
+    icon: Smartphone,
+    short: 'Apps móviles',
+    title: 'Aplicaciones móviles Android',
     description:
-      'Digitalización de trámites y flujos internos: formularios, expedientes, roles y trazabilidad.',
+      'Apps nativas en Kotlin y Jetpack Compose para trabajo de campo, con captura offline y sincronización, como la app de UESValle.',
+  },
+  {
+    icon: MonitorSmartphone,
+    short: 'Diseño responsive',
+    title: 'Diseño responsive y accesible',
+    description:
+      'Interfaces que funcionan bien en cualquier pantalla, con foco en usabilidad, accesibilidad y consistencia visual.',
   },
   {
     icon: Workflow,
+    short: 'Automatización',
     title: 'Automatización y herramientas internas',
     description:
       'Software a medida que sustituye trabajo manual repetitivo y ahorra horas al equipo.',
   },
   {
     icon: Sparkles,
+    short: 'IA en producto',
     title: 'IA aplicada al producto',
     description:
       'Resúmenes, clasificación y asistencia con modelos de lenguaje donde aportan valor real.',
   },
   {
-    icon: Smartphone,
-    title: 'Apps Android nativas',
+    icon: Building2,
+    short: 'Procesos institucionales',
+    title: 'Plataformas para procesos institucionales',
     description:
-      'Kotlin y Jetpack Compose para trabajo de campo: captura de datos, offline y sincronización.',
-  },
-  {
-    icon: Database,
-    title: 'Modelado de datos y APIs',
-    description:
-      'Esquemas relacionales en PostgreSQL/MySQL, APIs REST y control de acceso por rol.',
+      'Digitalización de trámites y flujos internos: expedientes, roles y trazabilidad, como el ecosistema digital de UESValle.',
   },
 ];
 
@@ -335,22 +331,52 @@ export const skillCategories: SkillCategory[] = [
   {
     title: 'Frontend',
     icon: Code2,
-    skills: ['React', 'TypeScript', 'Tailwind CSS', 'Vite', 'React Query', 'HTML / CSS'],
+    skills: [
+      { name: 'React', icon: 'react' },
+      { name: 'TypeScript', icon: 'typescript' },
+      { name: 'Tailwind CSS', icon: 'tailwindcss' },
+      { name: 'Vite', icon: 'vite' },
+      { name: 'React Query', icon: 'reactquery' },
+      { name: 'HTML5', icon: 'html5' },
+      { name: 'CSS', icon: 'css' },
+      { name: 'Diseño responsive' },
+    ],
   },
   {
     title: 'Backend & datos',
     icon: Database,
-    skills: ['PHP', 'Laravel', 'Node.js', 'Supabase', 'PostgreSQL', 'MySQL', 'REST', 'Auth / RLS'],
+    skills: [
+      { name: 'PHP', icon: 'php' },
+      { name: 'Laravel', icon: 'laravel' },
+      { name: 'Node.js', icon: 'nodejs' },
+      { name: 'Supabase', icon: 'supabase' },
+      { name: 'PostgreSQL', icon: 'postgresql' },
+      { name: 'MySQL', icon: 'mysql' },
+      { name: 'APIs REST' },
+      { name: 'Auth / RLS' },
+    ],
   },
   {
     title: 'Móvil',
     icon: Smartphone,
-    skills: ['Kotlin', 'Android SDK', 'Jetpack Compose', 'Room'],
+    skills: [
+      { name: 'Kotlin', icon: 'kotlin' },
+      { name: 'Android', icon: 'android' },
+      { name: 'Jetpack Compose', icon: 'jetpackcompose' },
+      { name: 'Room' },
+    ],
   },
   {
     title: 'Herramientas',
     icon: Wrench,
-    skills: ['Git', 'GitHub', 'Figma', 'Vercel', 'IA / LLMs', 'Linux'],
+    skills: [
+      { name: 'Git', icon: 'git' },
+      { name: 'GitHub', icon: 'github' },
+      { name: 'Figma', icon: 'figma' },
+      { name: 'Vercel', icon: 'vercel' },
+      { name: 'Linux', icon: 'linux' },
+      { name: 'IA / LLMs' },
+    ],
   },
 ];
 

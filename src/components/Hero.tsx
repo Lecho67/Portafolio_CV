@@ -1,8 +1,7 @@
 import { lazy, Suspense } from 'react';
 import { Download, Mail } from 'lucide-react';
-import { personal, socials } from '../data';
+import { focusAreas, personal, socials } from '../data';
 import { Reveal } from './Reveal';
-import { TechIcon } from './TechIcon';
 
 /**
  * Carga diferida del canvas 3D: mantiene fuera del bundle inicial a
@@ -58,20 +57,20 @@ export function Hero() {
               {personal.summary}
             </p>
 
-            {/* Stack principal */}
+            {/* Áreas de enfoque (el detalle está en "Sobre mí") */}
             <ul className="mt-6 flex flex-wrap gap-2.5">
-              {personal.stack.map((tech) => (
-                <li
-                  key={tech.name}
-                  className="group inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white/70 py-1.5 pl-2.5 pr-3.5 text-sm font-medium text-slate-700 backdrop-blur-sm transition-colors hover:border-brand-500/50 hover:text-brand-600 dark:border-slate-700/70 dark:bg-slate-900/60 dark:text-slate-200 dark:hover:text-brand-400"
-                >
-                  {tech.icon && (
-                    <TechIcon
-                      slug={tech.icon}
-                      className="h-[1.05rem] w-[1.05rem] shrink-0 text-slate-400 transition-colors group-hover:text-brand-500 dark:text-slate-500 dark:group-hover:text-brand-400"
+              {focusAreas.map((area) => (
+                <li key={area.short}>
+                  <a
+                    href="#about"
+                    className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white/70 py-1.5 pl-2.5 pr-3.5 text-sm font-medium text-slate-700 backdrop-blur-sm transition-colors hover:border-brand-500/50 hover:text-brand-600 dark:border-slate-700/70 dark:bg-slate-900/60 dark:text-slate-200 dark:hover:text-brand-400"
+                  >
+                    <area.icon
+                      size={15}
+                      className="shrink-0 text-brand-500 dark:text-brand-400"
                     />
-                  )}
-                  {tech.name}
+                    {area.short}
+                  </a>
                 </li>
               ))}
             </ul>

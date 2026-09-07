@@ -8,8 +8,10 @@ import {
   ImageOff,
   X,
 } from 'lucide-react';
-import { getProjectBySlug, projects, type ProjectImage } from '../data';
+import { getProjectBySlug, projects, socials, type ProjectImage } from '../data';
 import { Reveal } from './Reveal';
+
+const githubProfile = socials.find((s) => s.label === 'GitHub')?.href;
 
 /** Oculta los valores de ejemplo que aún empiezan por "TODO". */
 const real = (value?: string) =>
@@ -61,6 +63,9 @@ export function ProjectDetail({ slug }: ProjectDetailProps) {
 
   const next = projects[(projects.findIndex((p) => p.slug === slug) + 1) % projects.length];
 
+  // Enlace a GitHub: el repo del proyecto si está, si no, el perfil.
+  const githubUrl = project.repoUrl ?? githubProfile;
+
   return (
     <article className="mx-auto max-w-4xl px-6 pb-24 pt-28">
       <Reveal>
@@ -91,7 +96,7 @@ export function ProjectDetail({ slug }: ProjectDetailProps) {
         </header>
 
         {/* Acciones */}
-        {(project.liveUrl || project.repoUrl) && (
+        {(project.liveUrl || githubUrl) && (
           <div className="mt-6 flex flex-wrap gap-3">
             {project.liveUrl && (
               <a
@@ -103,14 +108,14 @@ export function ProjectDetail({ slug }: ProjectDetailProps) {
                 <ExternalLink size={16} /> Ver demo
               </a>
             )}
-            {project.repoUrl && (
+            {githubUrl && (
               <a
-                href={project.repoUrl}
+                href={githubUrl}
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex items-center gap-2 rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-semibold text-slate-700 transition-colors hover:border-slate-400 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
               >
-                <Github size={16} /> Código
+                <Github size={16} /> {project.repoUrl ? 'Ver código' : 'GitHub'}
               </a>
             )}
           </div>
