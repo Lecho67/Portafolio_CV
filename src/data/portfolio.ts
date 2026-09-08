@@ -99,6 +99,8 @@ export interface Project {
   contributions?: string[];
   /** Resultados e impacto medible o cualitativo (lista de puntos) */
   outcomes?: string[];
+  /** Estado y alcance: aclaraciones honestas (MVP, demo con mock, límites…) */
+  notes?: string[];
   /** Capturas de pantalla. Coloca los archivos en `public/proyectos/`. */
   images?: ProjectImage[];
 }
@@ -173,7 +175,7 @@ export const about: { paragraphs: string[] } = {
   // Uno o varios párrafos de biografía / trayectoria.
   paragraphs: [
     'Soy Ingeniero Informático y me dedico sobre todo al desarrollo web full-stack. Trabajo el ciclo completo: modelado de datos, APIs y lógica de negocio en el backend (PHP/Laravel, Supabase/PostgreSQL) e interfaz en React con TypeScript. También desarrollo apps Android nativas con Kotlin.',
-    'Me interesan los proyectos donde el software resuelve un problema concreto: evaluación logística con apoyo de IA, plataformas para procesos institucionales o herramientas internas que ahorran horas de trabajo manual.',
+    'Me interesan los proyectos donde el software resuelve un problema concreto: asesoría aduanera con IA, plataformas para procesos institucionales o herramientas internas que ahorran horas de trabajo manual.',
   ],
 };
 
@@ -189,7 +191,7 @@ export const focusAreas: FocusArea[] = [
     short: 'Full-stack',
     title: 'Desarrollo web full-stack',
     description:
-      'Plataformas de extremo a extremo —base de datos, APIs, lógica de negocio e interfaz—, como la plataforma de evaluación logística BorderCheck AI.',
+      'Plataformas de extremo a extremo —base de datos, APIs, lógica de negocio e interfaz—, como BorderCheck AI, una plataforma de asesoría aduanera con IA.',
   },
   {
     icon: Smartphone,
@@ -234,49 +236,67 @@ export const focusAreas: FocusArea[] = [
 
 /*
  * NOTA — página de detalle de cada proyecto (#/proyectos/<slug>):
- *   Los campos `overview`, `contributions`, `outcomes`, `timeline`, `team` e
- *   `images` alimentan esa página. He redactado un borrador a partir de la
- *   información que ya había; REVÍSALO y ajústalo a lo que realmente hiciste
- *   (sobre todo los datos concretos: duración, tamaño del equipo, resultados).
- *   Para las capturas, coloca los archivos en `public/proyectos/` y añádelos
- *   al array `images`. Si lo dejas vacío, la galería muestra un marcador.
+ *   `overview`, `contributions`, `outcomes`, `notes`, `timeline`, `team` e
+ *   `images` alimentan esa página. Para las capturas, coloca los archivos en
+ *   `public/proyectos/` y descomenta las entradas del array `images`.
  */
 export const projects: Project[] = [
   {
     slug: 'bordercheck-ai',
     title: 'BorderCheck AI',
     description:
-      'Plataforma web full-stack que digitaliza la evaluación de operaciones logísticas en frontera: centraliza la documentación, prioriza los casos por complejidad y riesgo, y usa modelos de lenguaje para resumir expedientes y sugerir la siguiente acción.',
-    tags: ['React', 'TypeScript', 'Tailwind CSS', 'Supabase', 'PostgreSQL', 'IA / LLMs'],
+      'Plataforma web B2C de asesoría aduanera con IA: el usuario describe su envío internacional y la app le dice si pasará la aduana —veredicto Apto / Advertencia / Bloqueado con su justificación legal y el desglose de tributos—, con casillero virtual, KYC y auditoría humana de cada veredicto.',
+    tags: [
+      'React',
+      'TypeScript',
+      'Vite',
+      'Tailwind CSS',
+      'Supabase',
+      'PostgreSQL (RLS)',
+      'Playwright',
+      'IA / LLMs',
+    ],
     featured: true,
     year: '2025',
-    role: 'Full-stack',
+    role: 'Frontend + Supabase',
     icon: ScanSearch,
     cover: 'from-emerald-500 via-teal-500 to-cyan-600',
-    timeline: 'TODO: p. ej. «3 meses · 2025»',
-    team: 'TODO: p. ej. «Proyecto individual» o «Equipo de 3»',
-    context: 'TODO: académico / empresa / cliente',
-    // TODO: añade los enlaces reales cuando estén disponibles.
-    // repoUrl: 'https://github.com/Lecho67/bordercheck-ai',
-    // liveUrl: 'https://bordercheck.example.com',
+    timeline: '2025 — en desarrollo activo',
+    team: 'Yo: frontend + Supabase · motor de IA: un colaborador',
+    context: 'Proyecto personal · MVP funcional',
+    repoUrl: 'https://github.com/Lecho67/BorderCheck-AI_Frontend',
+    liveUrl: 'https://border-check-ai-frontend.vercel.app',
     overview: [
-      'La evaluación de operaciones logísticas en frontera dependía de revisar manualmente documentación dispersa (facturas, permisos, manifiestos) para decidir qué casos necesitaban una inspección más detallada. El proceso era lento, difícil de auditar y variaba según quién lo hiciera.',
-      'BorderCheck AI reúne toda esa información en un expediente por operación y añade una capa de asistencia con IA para que el equipo se enfoque primero en los casos de mayor riesgo.',
+      'Los envíos internacionales se retienen, devuelven o destruyen en aduana por restricciones que el remitente desconoce —baterías de litio, aerosoles, productos regulados—. Resolverlo después toma días y genera multas y sobrecostes evitables.',
+      'BorderCheck AI se consulta antes del despacho: el usuario describe su envío y recibe un veredicto —Apto, Advertencia o Bloqueado— con su justificación legal, los documentos que necesita y una estimación de tributos. La IA no responde en abierto: se ancla a una base de reglas normativas y cada veredicto cita su fuente; cuando faltan datos, marca el caso para revisión humana en vez de forzar un resultado.',
+      'Yo diseñé e implementé todo el frontend y la capa de datos y seguridad en Supabase. El motor de reglas aduaneras lo mantiene un colaborador en un repositorio aparte, y el frontend está pensado para funcionar sin él (usa un mock determinista), por eso la demo desplegada funciona por sí sola.',
     ],
     contributions: [
-      'Modelado de datos en PostgreSQL/Supabase: esquema de operaciones, documentos y usuarios con políticas de seguridad a nivel de fila (RLS).',
-      'Interfaz completa en React + TypeScript + Tailwind: carga de expedientes, tablero de priorización y vista de detalle de cada operación.',
-      'Integración con modelos de lenguaje para resumir la documentación de un expediente y proponer la siguiente acción.',
-      'Autenticación, control de acceso por rol y despliegue.',
+      'Frontend completo en React + TypeScript (strict) + Vite: asistente de evaluación de envíos, vista de veredicto, historial, dashboards, casillero virtual y centro de ayuda. Ruteo con code-splitting y estado con Zustand + Context.',
+      'Modelo de datos y capa de seguridad en Supabase/PostgreSQL: esquema, políticas Row-Level Security, funciones SECURITY DEFINER (RPCs) y triggers. La autorización real vive en la base de datos; el frontend solo aporta la UX.',
+      'RBAC de 4 roles (cliente, agente, gestor, admin): cola de revisión de casos, auditoría de veredictos de IA (override atómico y trazado vía RPC) y panel de administración con métricas globales.',
+      'KYC y cumplimiento de la Ley 1581 de 2012: verificación de identidad y gating de funciones reforzado en las políticas de la base de datos, no solo en la interfaz.',
+      'Notificaciones en vivo con Supabase Realtime y resiliencia de sesión: reintentos con backoff y una pantalla de «reintentar» en vez de expulsar al usuario ante fallos transitorios de red.',
+      'Infraestructura de calidad: ~170 tests (unitarios, de componente y E2E con Playwright) en CI con GitHub Actions, y despliegue endurecido en Vercel (CSP, HSTS y cabeceras de seguridad) con una auditoría de readiness documentada.',
     ],
     outcomes: [
-      'TODO: resultado medible, p. ej. «reduce de X a Y minutos la revisión de un expediente».',
-      'Un único lugar de consulta y trazabilidad para cada operación.',
-      'Criterio de priorización consistente entre revisores.',
+      'Un veredicto de aduana con su fundamento legal en segundos, antes de despachar, en lugar de días de gestión manual.',
+      'Seguridad probada, no asumida: durante el desarrollo encontré y cerré una escalación de privilegios —un usuario podía auto-asignarse rol de admin o auto-aprobar su KYC vía la API REST— con un trigger en la base de datos, verificada con pruebas PATCH reales.',
+      'Los tests E2E autenticados detectaron un bug de carrera real en la protección de rutas (sesión cargada pero perfil aún no) que los tests unitarios no veían; se corrigió con un test de regresión.',
+      'Demo pública funcional sin depender del backend de IA; bundle inicial ~130 kB gzip gracias al code-splitting por ruta.',
+    ],
+    notes: [
+      'MVP funcional en desarrollo activo, todavía sin usuarios reales.',
+      'El motor de reglas de IA es de un colaborador y vive en otro repositorio; la demo pública corre contra un mock determinista, no contra el modelo.',
+      'Infraestructura sobre capas gratuitas (Vercel, Supabase).',
     ],
     images: [
-      // { src: '/proyectos/bordercheck-tablero.png', alt: 'Tablero de priorización de operaciones' },
-      // { src: '/proyectos/bordercheck-detalle.png', alt: 'Vista de detalle de un expediente con el resumen de IA' },
+      // { src: '/proyectos/bordercheck-landing.png', alt: 'Landing con el pitch y los tres badges de veredicto' },
+      // { src: '/proyectos/bordercheck-asistente.png', alt: 'Asistente de evaluación de envíos (formulario)' },
+      // { src: '/proyectos/bordercheck-veredicto.png', alt: 'Vista de veredicto: badge de color, justificación legal y desglose de tributos' },
+      // { src: '/proyectos/bordercheck-cola-revision.png', alt: 'Cola de revisión del agente con filtros y el drawer de auditoría de un caso' },
+      // { src: '/proyectos/bordercheck-metricas.png', alt: 'Dashboard de métricas del admin con el volumen mensual de consultas' },
+      // { src: '/proyectos/bordercheck-kyc.png', alt: 'Panel de aprobación de KYC' },
     ],
   },
   {

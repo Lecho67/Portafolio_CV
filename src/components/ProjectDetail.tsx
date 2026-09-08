@@ -52,6 +52,7 @@ export function ProjectDetail({ slug }: ProjectDetailProps) {
   const overview = realList(project.overview);
   const contributions = realList(project.contributions);
   const outcomes = realList(project.outcomes);
+  const notes = realList(project.notes);
   const images = project.images ?? [];
 
   const meta = [
@@ -214,6 +215,24 @@ export function ProjectDetail({ slug }: ProjectDetailProps) {
             </ul>
           </Block>
         </Reveal>
+
+        {notes.length > 0 && (
+          <Reveal>
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-5 dark:border-slate-800 dark:bg-slate-900/50">
+              <h2 className="font-display text-sm font-semibold uppercase tracking-[0.15em] text-slate-500 dark:text-slate-400">
+                Estado y alcance
+              </h2>
+              <ul className="mt-3 space-y-2 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+                {notes.map((n, i) => (
+                  <li key={i} className="flex gap-2.5">
+                    <span aria-hidden className="mt-2 h-1 w-1 shrink-0 rounded-full bg-slate-400" />
+                    <span>{n}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </Reveal>
+        )}
       </div>
 
       {/* Navegación entre proyectos */}
