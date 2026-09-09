@@ -1,9 +1,7 @@
-import { ArrowRight, ArrowUpRight, ExternalLink, Github, Layers } from 'lucide-react';
-import { projects, socials, type Project } from '../data';
+import { ArrowRight, ExternalLink, Layers } from 'lucide-react';
+import { projects, type Project } from '../data';
 import { Section } from './Section';
 import { Reveal } from './Reveal';
-
-const githubProfile = socials.find((s) => s.label === 'GitHub')?.href;
 
 /** Tarjetas de proyecto en formato caso de estudio. Cada una abre su detalle. */
 export function Projects() {
@@ -28,24 +26,6 @@ export function Projects() {
           </Reveal>
         ))}
       </div>
-
-      {githubProfile && (
-        <Reveal delay={120} className="mt-8">
-          <a
-            href={githubProfile}
-            target="_blank"
-            rel="noreferrer"
-            className="group/gh inline-flex items-center gap-2 text-sm font-semibold text-slate-600 transition-colors hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400"
-          >
-            <Github size={16} />
-            Ver todos los repositorios en GitHub
-            <ArrowUpRight
-              size={16}
-              className="transition-transform group-hover/gh:translate-x-0.5 group-hover/gh:-translate-y-0.5"
-            />
-          </a>
-        </Reveal>
-      )}
     </Section>
   );
 }
@@ -94,31 +74,16 @@ function ProjectBody({ project }: { project: Project }) {
             {project.title}
           </a>
         </h3>
-        {(project.repoUrl || project.liveUrl) && (
-          <div className="relative z-10 flex shrink-0 items-center gap-3 text-slate-400">
-            {project.repoUrl && (
-              <a
-                href={project.repoUrl}
-                target="_blank"
-                rel="noreferrer"
-                aria-label={`Código fuente de ${project.title}`}
-                className="transition-colors hover:text-slate-900 dark:hover:text-white"
-              >
-                <Github size={18} />
-              </a>
-            )}
-            {project.liveUrl && (
-              <a
-                href={project.liveUrl}
-                target="_blank"
-                rel="noreferrer"
-                aria-label={`Demo en vivo de ${project.title}`}
-                className="transition-colors hover:text-brand-500"
-              >
-                <ExternalLink size={18} />
-              </a>
-            )}
-          </div>
+        {project.liveUrl && (
+          <a
+            href={project.liveUrl}
+            target="_blank"
+            rel="noreferrer"
+            aria-label={`Demo en vivo de ${project.title}`}
+            className="relative z-10 shrink-0 text-slate-400 transition-colors hover:text-brand-500"
+          >
+            <ExternalLink size={18} />
+          </a>
         )}
       </div>
 

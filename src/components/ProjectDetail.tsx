@@ -1,17 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react';
-import {
-  ArrowLeft,
-  ArrowRight,
-  Check,
-  ExternalLink,
-  Github,
-  ImageOff,
-  X,
-} from 'lucide-react';
-import { getProjectBySlug, projects, socials, type ProjectImage } from '../data';
+import { ArrowLeft, ArrowRight, Check, ExternalLink, ImageOff, X } from 'lucide-react';
+import { getProjectBySlug, projects, type ProjectImage } from '../data';
 import { Reveal } from './Reveal';
-
-const githubProfile = socials.find((s) => s.label === 'GitHub')?.href;
 
 /** Oculta los valores de ejemplo que aún empiezan por "TODO". */
 const real = (value?: string) =>
@@ -24,8 +14,9 @@ interface ProjectDetailProps {
 }
 
 /**
- * Página de detalle de un proyecto (`#/proyectos/<slug>`).
- * Si el slug no existe, muestra un aviso con enlace de vuelta.
+ * Página de detalle de un proyecto (`#/proyectos/<slug>`). Usa el mismo
+ * sistema de diseño que el resto del portafolio (navy + esmeralda, mono para
+ * marcadores y chips). Si el slug no existe, muestra un aviso con enlace.
  */
 export function ProjectDetail({ slug }: ProjectDetailProps) {
   const project = getProjectBySlug(slug);
@@ -64,31 +55,25 @@ export function ProjectDetail({ slug }: ProjectDetailProps) {
 
   const next = projects[(projects.findIndex((p) => p.slug === slug) + 1) % projects.length];
 
-  // Enlace a GitHub: el repo del proyecto si está, si no, el perfil.
-  const githubUrl = project.repoUrl ?? githubProfile;
-
   return (
-    <article className="mx-auto max-w-4xl px-6 pb-24 pt-28">
+    <article className="mx-auto max-w-4xl px-6 pb-24 pt-24">
       <Reveal>
         <a
           href="#projects"
-          className="group inline-flex items-center gap-2 text-sm font-semibold text-slate-500 transition-colors hover:text-brand-600 dark:text-slate-400 dark:hover:text-brand-400"
+          className="group inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.14em] text-slate-500 transition-colors hover:text-brand-600 dark:text-slate-400 dark:hover:text-brand-400"
         >
-          <ArrowLeft
-            size={16}
-            className="transition-transform group-hover:-translate-x-0.5"
-          />
+          <ArrowLeft size={14} className="transition-transform group-hover:-translate-x-0.5" />
           Proyectos
         </a>
 
         {/* Cabecera */}
-        <header className="mt-6">
-          <p className="flex items-center gap-2 font-display text-xs font-semibold uppercase tracking-[0.2em] text-brand-600 dark:text-brand-400">
-            {project.year && <span className="tabular-nums">{project.year}</span>}
-            {project.year && project.role && <span aria-hidden>·</span>}
-            {project.role && <span>{project.role}</span>}
-          </p>
-          <h1 className="mt-3 font-display text-3xl font-bold tracking-tight text-slate-900 text-balance sm:text-4xl dark:text-white">
+        <header className="mt-7">
+          {(project.year || project.role) && (
+            <p className="eyebrow">
+              {[project.year, project.role].filter(Boolean).join(' · ')}
+            </p>
+          )}
+          <h1 className="mt-4 text-balance font-display text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl dark:text-white">
             {project.title}
           </h1>
           <p className="mt-4 max-w-2xl text-pretty text-lg leading-relaxed text-slate-600 dark:text-slate-400">
@@ -97,28 +82,16 @@ export function ProjectDetail({ slug }: ProjectDetailProps) {
         </header>
 
         {/* Acciones */}
-        {(project.liveUrl || githubUrl) && (
-          <div className="mt-6 flex flex-wrap gap-3">
-            {project.liveUrl && (
-              <a
-                href={project.liveUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-500"
-              >
-                <ExternalLink size={16} /> Ver demo
-              </a>
-            )}
-            {githubUrl && (
-              <a
-                href={githubUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-2 rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-semibold text-slate-700 transition-colors hover:border-slate-400 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
-              >
-                <Github size={16} /> {project.repoUrl ? 'Ver código' : 'GitHub'}
-              </a>
-            )}
+        {project.liveUrl && (
+          <div className="mt-6">
+            <a
+              href={project.liveUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-500"
+            >
+              <ExternalLink size={16} /> Ver demo
+            </a>
           </div>
         )}
       </Reveal>
@@ -130,11 +103,9 @@ export function ProjectDetail({ slug }: ProjectDetailProps) {
             {meta.map((m) => (
               <div
                 key={m.label}
-                className="min-w-[8rem] flex-1 rounded-xl border border-slate-200 p-4 dark:border-slate-800"
+                className="min-w-[8rem] flex-1 rounded-xl border border-slate-200 bg-white p-4 dark:border-ink-700 dark:bg-ink-900"
               >
-                <dt className="font-display text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                  {m.label}
-                </dt>
+                <dt className="kicker">{m.label}</dt>
                 <dd className="mt-1 text-sm font-medium text-slate-900 dark:text-white">
                   {m.value}
                 </dd>
@@ -171,10 +142,7 @@ export function ProjectDetail({ slug }: ProjectDetailProps) {
               <ul className="space-y-3">
                 {contributions.map((c, i) => (
                   <li key={i} className="flex gap-3 text-slate-600 dark:text-slate-400">
-                    <Check
-                      size={18}
-                      className="mt-0.5 shrink-0 text-brand-500 dark:text-brand-400"
-                    />
+                    <Check size={18} className="mt-0.5 shrink-0 text-brand-500 dark:text-brand-400" />
                     <span className="leading-relaxed">{c}</span>
                   </li>
                 ))}
@@ -189,10 +157,7 @@ export function ProjectDetail({ slug }: ProjectDetailProps) {
               <ul className="space-y-3">
                 {outcomes.map((o, i) => (
                   <li key={i} className="flex gap-3 text-slate-600 dark:text-slate-400">
-                    <ArrowRight
-                      size={18}
-                      className="mt-0.5 shrink-0 text-brand-500 dark:text-brand-400"
-                    />
+                    <ArrowRight size={18} className="mt-0.5 shrink-0 text-brand-500 dark:text-brand-400" />
                     <span className="leading-relaxed">{o}</span>
                   </li>
                 ))}
@@ -203,11 +168,11 @@ export function ProjectDetail({ slug }: ProjectDetailProps) {
 
         <Reveal>
           <Block title="Stack">
-            <ul className="flex flex-wrap gap-2">
+            <ul className="flex flex-wrap gap-1.5">
               {project.tags.map((tag) => (
                 <li
                   key={tag}
-                  className="rounded-md bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-300"
+                  className="rounded-md border border-slate-200 bg-slate-50 px-2 py-1 font-mono text-xs text-slate-600 dark:border-ink-700 dark:bg-ink-800 dark:text-slate-300"
                 >
                   {tag}
                 </li>
@@ -218,8 +183,8 @@ export function ProjectDetail({ slug }: ProjectDetailProps) {
 
         {notes.length > 0 && (
           <Reveal>
-            <div className="rounded-xl border border-slate-200 bg-slate-50 p-5 dark:border-slate-800 dark:bg-slate-900/50">
-              <h2 className="font-display text-sm font-semibold uppercase tracking-[0.15em] text-slate-500 dark:text-slate-400">
+            <div className="rounded-xl border border-slate-200 bg-slate-50/60 p-5 dark:border-ink-700 dark:bg-ink-900/60">
+              <h2 className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">
                 Estado y alcance
               </h2>
               <ul className="mt-3 space-y-2 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
@@ -240,12 +205,10 @@ export function ProjectDetail({ slug }: ProjectDetailProps) {
         <Reveal>
           <a
             href={`#/proyectos/${next.slug}`}
-            className="group mt-16 flex items-center justify-between gap-4 rounded-2xl border border-slate-200 p-6 transition-colors hover:border-brand-500/40 dark:border-slate-800 dark:hover:border-brand-500/40"
+            className="group mt-16 flex items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-white p-6 transition-colors hover:border-brand-500/45 dark:border-ink-700 dark:bg-ink-900 dark:hover:border-brand-500/45"
           >
             <span>
-              <span className="font-display text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                Siguiente proyecto
-              </span>
+              <span className="kicker">Siguiente proyecto</span>
               <span className="mt-1 block font-display text-lg font-semibold text-slate-900 dark:text-white">
                 {next.title}
               </span>
@@ -261,11 +224,11 @@ export function ProjectDetail({ slug }: ProjectDetailProps) {
   );
 }
 
-/** Bloque de contenido con título. */
+/** Bloque de contenido con título en mono. */
 function Block({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section>
-      <h2 className="font-display text-sm font-semibold uppercase tracking-[0.15em] text-slate-500 dark:text-slate-400">
+      <h2 className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">
         {title}
       </h2>
       <div className="mt-4">{children}</div>
@@ -300,10 +263,10 @@ function Gallery({ images }: { images: ProjectImage[] }) {
 
   if (images.length === 0) {
     return (
-      <div className="mt-10 grid place-items-center rounded-2xl border border-dashed border-slate-300 bg-slate-50 py-14 dark:border-slate-700 dark:bg-slate-900/50">
+      <div className="mt-10 grid place-items-center rounded-2xl border border-dashed border-slate-300 bg-slate-50/60 py-14 dark:border-ink-600 dark:bg-ink-900/50">
         <div className="flex flex-col items-center gap-2 text-slate-400 dark:text-slate-500">
           <ImageOff size={24} />
-          <p className="text-sm font-medium">Capturas próximamente</p>
+          <p className="font-mono text-xs uppercase tracking-[0.14em]">Capturas próximamente</p>
         </div>
       </div>
     );
@@ -311,17 +274,13 @@ function Gallery({ images }: { images: ProjectImage[] }) {
 
   return (
     <>
-      <div
-        className={`mt-10 grid gap-4 ${
-          images.length === 1 ? 'grid-cols-1' : 'sm:grid-cols-2'
-        }`}
-      >
+      <div className={`mt-10 grid gap-4 ${images.length === 1 ? 'grid-cols-1' : 'sm:grid-cols-2'}`}>
         {images.map((img, i) => (
           <button
             key={img.src}
             type="button"
             onClick={() => setActive(i)}
-            className="group relative aspect-[16/10] overflow-hidden rounded-xl border border-slate-200 bg-slate-100 dark:border-slate-800 dark:bg-slate-900"
+            className="group relative aspect-[16/10] overflow-hidden rounded-xl border border-slate-200 bg-slate-100 dark:border-ink-700 dark:bg-ink-800"
           >
             <GalleryImage img={img} />
           </button>
@@ -330,7 +289,7 @@ function Gallery({ images }: { images: ProjectImage[] }) {
 
       {active !== null && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/90 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-ink/95 p-4 backdrop-blur-sm"
           onClick={() => setActive(null)}
           role="dialog"
           aria-modal="true"
@@ -356,7 +315,7 @@ function Gallery({ images }: { images: ProjectImage[] }) {
   );
 }
 
-/** Imagen con degradado de reserva si el archivo no existe todavía. */
+/** Imagen con marcador de reserva si el archivo no existe todavía. */
 function GalleryImage({ img }: { img: ProjectImage }) {
   const [failed, setFailed] = useState(false);
 

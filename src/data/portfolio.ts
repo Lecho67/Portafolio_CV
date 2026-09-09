@@ -276,7 +276,8 @@ export const projects: Project[] = [
     timeline: '2025 — en desarrollo activo',
     team: 'Yo: frontend + Supabase · motor de IA: un colaborador',
     context: 'Proyecto personal · MVP funcional',
-    repoUrl: 'https://github.com/Lecho67/BorderCheck-AI_Frontend',
+    // Repo privado por ahora — se enlaza solo la demo.
+    // repoUrl: 'https://github.com/Lecho67/BorderCheck-AI_Frontend',
     liveUrl: 'https://border-check-ai-frontend.vercel.app',
     overview: [
       'Los envíos internacionales se retienen, devuelven o destruyen en aduana por restricciones que el remitente desconoce —baterías de litio, aerosoles, productos regulados—. Resolverlo después toma días y genera multas y sobrecostes evitables.',
