@@ -15,11 +15,18 @@ import {
   siKotlin,
   siAndroid,
   siJetpackcompose,
+  siNestjs,
   siGit,
   siGithub,
   siFigma,
   siVercel,
   siLinux,
+  siDocker,
+  siPython,
+  siPandas,
+  siScikitlearn,
+  siNumpy,
+  siJupyter,
   type SimpleIcon,
 } from 'simple-icons';
 
@@ -47,11 +54,18 @@ const ICONS: Record<string, SimpleIcon> = {
   kotlin: siKotlin,
   android: siAndroid,
   jetpackcompose: siJetpackcompose,
+  nestjs: siNestjs,
   git: siGit,
   github: siGithub,
   figma: siFigma,
   vercel: siVercel,
   linux: siLinux,
+  docker: siDocker,
+  python: siPython,
+  pandas: siPandas,
+  scikitlearn: siScikitlearn,
+  numpy: siNumpy,
+  jupyter: siJupyter,
 };
 
 interface TechIconProps {

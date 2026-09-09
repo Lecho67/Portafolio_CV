@@ -16,13 +16,24 @@ export default {
       /* ------------------------------------------------------------------ */
       colors: {
         brand: colors.emerald,
-        accent: colors.teal,
+        accent: colors.emerald,
+        // Fondo azul marino profundo del modo oscuro (#0A0E1B y variantes).
+        ink: {
+          DEFAULT: '#0A0E1B',
+          950: '#0A0E1B',
+          900: '#111726',
+          800: '#161D30',
+          700: '#232C42',
+          600: '#33405E',
+        },
       },
       fontFamily: {
         // Cuerpo de texto. Fuente Inter cargada desde index.html.
         sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
         // Títulos y cifras. Space Grotesk cargada desde index.html.
         display: ['"Space Grotesk"', 'Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        // Etiquetas técnicas, números de sección y chips de stack.
+        mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
       },
       keyframes: {
         'reveal-up': {

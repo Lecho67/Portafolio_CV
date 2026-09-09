@@ -15,8 +15,8 @@
   }
 
   body {
-    @apply bg-white text-slate-700 antialiased;
-    @apply dark:bg-slate-950 dark:text-slate-300;
+    @apply bg-[#f6f8fb] text-slate-700 antialiased;
+    @apply dark:bg-ink dark:text-slate-300;
   }
 
   /* Selección de texto teñida con el color de acento */
@@ -26,7 +26,7 @@
 
   /* Foco visible y accesible en toda la página */
   :focus-visible {
-    @apply outline-none ring-2 ring-brand-500 ring-offset-2 ring-offset-white dark:ring-offset-slate-950;
+    @apply outline-none ring-2 ring-brand-500 ring-offset-2 ring-offset-[#f6f8fb] dark:ring-offset-ink;
   }
 
   /* Respeta la preferencia de "reducir movimiento" del sistema */
@@ -34,6 +34,22 @@
     html {
       scroll-behavior: auto;
     }
+  }
+}
+
+@layer components {
+  /* Marcador de sección tipo comentario de código: "01 — SOBRE MÍ" */
+  .eyebrow {
+    @apply inline-flex items-center gap-3 font-mono text-xs font-medium uppercase tracking-[0.22em] text-brand-600 dark:text-brand-400;
+  }
+  .eyebrow::before {
+    content: '';
+    @apply h-px w-6 bg-brand-500/60;
+  }
+
+  /* Etiqueta pequeña en mono (kicker de tarjeta, meta de proyecto…) */
+  .kicker {
+    @apply font-mono text-[0.7rem] uppercase tracking-[0.14em] text-slate-400 dark:text-slate-500;
   }
 }
 

@@ -15,12 +15,10 @@ import {
   Code2,
   Database,
   Smartphone,
-  MonitorSmartphone,
-  Wrench,
+  Server,
   Sparkles,
-  Workflow,
+  LineChart,
   Layers,
-  Building2,
   ScanSearch,
   Droplets,
   type LucideIcon,
@@ -42,10 +40,11 @@ export interface NavItem {
   href: `#${string}`;
 }
 
-export interface FocusArea {
+/** Pilar de la sección "Sobre mí": una de las 4 áreas en las que trabajo. */
+export interface Pillar {
   icon: LucideIcon;
-  /** Etiqueta corta para el chip del hero, p. ej. 'Full-stack' */
-  short: string;
+  /** Etiqueta en mono, p. ej. 'full-stack' o 'data · ml' */
+  kicker: string;
   title: string;
   description: string;
 }
@@ -54,6 +53,15 @@ export interface Skill {
   name: string;
   /** Clave del logo en `TechIcon` (p. ej. 'react'). Opcional. */
   icon?: string;
+}
+
+/** Titulación académica de la sección "Formación". */
+export interface Education {
+  degree: string;
+  /** Institución y año, p. ej. 'Universidad del Valle · 2024' */
+  institution: string;
+  /** Énfasis / áreas destacadas */
+  focus: string[];
 }
 
 export interface ProjectImage {
@@ -109,6 +117,10 @@ export interface SkillCategory {
   title: string;
   icon: LucideIcon;
   skills: Skill[];
+  /** Nota corta en mono, p. ej. 'en desarrollo' (opcional) */
+  kicker?: string;
+  /** Resalta la tarjeta con borde de acento (p. ej. la capa que estás creciendo) */
+  featured?: boolean;
 }
 
 export interface Certification {
@@ -133,14 +145,28 @@ export const personal = {
   /** Iniciales para el logo */
   initials: 'SC',
   /** Rol profesional principal */
-  role: 'Ingeniero Informático · Desarrollador Full-Stack',
+  role: 'Ingeniero Informático y desarrollador full-stack.',
   /** Ubicación (ciudad, país) — ajústala si hace falta */
   location: 'Valle del Cauca, Colombia',
+  /** Estado breve para el badge del hero */
+  availability: 'Disponible',
   /** Email de contacto */
   email: 'simoncolonia67@gmail.com',
   /** Presentación del hero (2-3 líneas) */
   summary:
-    'Ingeniero Informático especializado en desarrollo web full-stack. Construyo plataformas de extremo a extremo con React y TypeScript en el frontend y PHP/Laravel o Supabase en el backend. También trabajo Android nativo con Kotlin.',
+    'Construyo plataformas de extremo a extremo —React y TypeScript en el frontend, PHP/Laravel y Supabase en el backend, Android nativo con Kotlin— y estoy llevando ese trabajo hacia los datos: machine learning y pipelines ETL sobre datos abiertos. Me interesan los proyectos donde el software resuelve un problema concreto y medible.',
+  /** Chips del hero — resumen de "en qué me muevo". El detalle va en "Sobre mí". */
+  badges: [
+    'Full-stack',
+    'IA en producto',
+    'Datos y modelos',
+    'Automatización',
+    'Apps móviles',
+    'Diseño responsive',
+    'Procesos institucionales',
+  ],
+  /** Frase-narrativa junto al objeto 3D del hero */
+  flow: ['datos', 'modelo', 'producto'],
   /** Ruta al CV. Coloca el archivo en `public/cv.pdf`. */
   resumeUrl: '/cv.pdf',
 };
@@ -163,7 +189,7 @@ export const navItems: NavItem[] = [
   { label: 'Sobre mí', href: '#about' },
   { label: 'Proyectos', href: '#projects' },
   { label: 'Habilidades', href: '#skills' },
-  { label: 'Certificaciones', href: '#certifications' },
+  { label: 'Formación', href: '#education' },
   { label: 'Contacto', href: '#contact' },
 ];
 
@@ -171,62 +197,48 @@ export const navItems: NavItem[] = [
 /*  SECCIÓN "SOBRE MÍ"                                                         */
 /* -------------------------------------------------------------------------- */
 
-export const about: { paragraphs: string[] } = {
-  // Uno o varios párrafos de biografía / trayectoria.
+export const about: { headline: string; paragraphs: string[] } = {
+  headline: 'Del ciclo completo de producto al modelado de datos.',
   paragraphs: [
     'Soy Ingeniero Informático y me dedico sobre todo al desarrollo web full-stack. Trabajo el ciclo completo: modelado de datos, APIs y lógica de negocio en el backend (PHP/Laravel, Supabase/PostgreSQL) e interfaz en React con TypeScript. También desarrollo apps Android nativas con Kotlin.',
     'Me interesan los proyectos donde el software resuelve un problema concreto: asesoría aduanera con IA, plataformas para procesos institucionales o herramientas internas que ahorran horas de trabajo manual.',
+    'En paralelo estoy desarrollando la parte de datos: modelos tabulares de predicción de riesgo sobre datos abiertos colombianos y pipelines ETL que dejan esos datos listos para analizar. Es la misma lógica de siempre —entender el problema y construir la solución completa— aplicada a los datos.',
   ],
 };
 
 /* -------------------------------------------------------------------------- */
-/*  ÁREAS DE ENFOQUE  —  "en qué me enfoco / soy bueno / me gusta"             */
-/*  `short` sale como chip en el hero; el resto, como tarjeta en "Sobre mí".   */
-/*  Ajusta las descripciones y los ejemplos a lo que realmente has construido. */
+/*  PILARES  —  las 4 áreas en las que trabajo (tarjetas de "Sobre mí")        */
+/*  El `kicker` va en mono; ajusta las descripciones a lo que de verdad haces. */
 /* -------------------------------------------------------------------------- */
 
-export const focusAreas: FocusArea[] = [
+export const pillars: Pillar[] = [
   {
     icon: Layers,
-    short: 'Full-stack',
-    title: 'Desarrollo web full-stack',
+    kicker: 'full-stack',
+    title: 'Producto de extremo a extremo',
     description:
-      'Plataformas de extremo a extremo —base de datos, APIs, lógica de negocio e interfaz—, como BorderCheck AI, una plataforma de asesoría aduanera con IA.',
+      'Base de datos, APIs, lógica de negocio e interfaz. Seguridad en la capa de datos, no solo en la UI.',
+  },
+  {
+    icon: LineChart,
+    kicker: 'data · ml',
+    title: 'Modelos sobre datos reales',
+    description:
+      'Modelos tabulares, ingeniería de características y pipelines ETL sobre datos abiertos colombianos.',
   },
   {
     icon: Smartphone,
-    short: 'Apps móviles',
-    title: 'Aplicaciones móviles Android',
+    kicker: 'móvil',
+    title: 'Android nativo con Kotlin',
     description:
-      'Apps nativas en Kotlin y Jetpack Compose para trabajo de campo, con captura offline y sincronización, como la app de UESValle.',
-  },
-  {
-    icon: MonitorSmartphone,
-    short: 'Diseño responsive',
-    title: 'Diseño responsive y accesible',
-    description:
-      'Interfaces que funcionan bien en cualquier pantalla, con foco en usabilidad, accesibilidad y consistencia visual.',
-  },
-  {
-    icon: Workflow,
-    short: 'Automatización',
-    title: 'Automatización y herramientas internas',
-    description:
-      'Software a medida que sustituye trabajo manual repetitivo y ahorra horas al equipo.',
+      'Apps para trabajo de campo con Jetpack Compose, captura offline y sincronización.',
   },
   {
     icon: Sparkles,
-    short: 'IA en producto',
-    title: 'IA aplicada al producto',
+    kicker: 'ia aplicada',
+    title: 'LLMs anclados a reglas',
     description:
-      'Resúmenes, clasificación y asistencia con modelos de lenguaje donde aportan valor real.',
-  },
-  {
-    icon: Building2,
-    short: 'Procesos institucionales',
-    title: 'Plataformas para procesos institucionales',
-    description:
-      'Digitalización de trámites y flujos internos: expedientes, roles y trazabilidad, como el ecosistema digital de UESValle.',
+      'IA que cita su fuente y deriva a revisión humana cuando faltan datos, en vez de improvisar.',
   },
 ];
 
@@ -357,27 +369,22 @@ export const skillCategories: SkillCategory[] = [
       { name: 'Tailwind CSS', icon: 'tailwindcss' },
       { name: 'Vite', icon: 'vite' },
       { name: 'React Query', icon: 'reactquery' },
-      { name: 'HTML5', icon: 'html5' },
-      { name: 'CSS', icon: 'css' },
-      { name: 'Diseño responsive' },
     ],
   },
   {
-    title: 'Backend & datos',
+    title: 'Backend',
     icon: Database,
     skills: [
       { name: 'PHP', icon: 'php' },
       { name: 'Laravel', icon: 'laravel' },
-      { name: 'Node.js', icon: 'nodejs' },
       { name: 'Supabase', icon: 'supabase' },
-      { name: 'PostgreSQL', icon: 'postgresql' },
-      { name: 'MySQL', icon: 'mysql' },
+      { name: 'NestJS', icon: 'nestjs' },
+      { name: 'Node.js', icon: 'nodejs' },
       { name: 'APIs REST' },
-      { name: 'Auth / RLS' },
     ],
   },
   {
-    title: 'Móvil',
+    title: 'Mobile',
     icon: Smartphone,
     skills: [
       { name: 'Kotlin', icon: 'kotlin' },
@@ -387,48 +394,49 @@ export const skillCategories: SkillCategory[] = [
     ],
   },
   {
-    title: 'Herramientas',
-    icon: Wrench,
+    title: 'Data / ML',
+    icon: LineChart,
+    kicker: 'en desarrollo',
+    featured: true,
     skills: [
+      { name: 'Python', icon: 'python' },
+      { name: 'pandas', icon: 'pandas' },
+      { name: 'scikit-learn', icon: 'scikitlearn' },
+      { name: 'XGBoost' },
+      { name: 'LightGBM' },
+    ],
+  },
+  {
+    title: 'Infraestructura',
+    icon: Server,
+    skills: [
+      { name: 'Docker', icon: 'docker' },
+      { name: 'PostgreSQL', icon: 'postgresql' },
+      { name: 'MySQL', icon: 'mysql' },
       { name: 'Git', icon: 'git' },
-      { name: 'GitHub', icon: 'github' },
-      { name: 'Figma', icon: 'figma' },
       { name: 'Vercel', icon: 'vercel' },
       { name: 'Linux', icon: 'linux' },
-      { name: 'IA / LLMs' },
     ],
   },
 ];
 
 /* -------------------------------------------------------------------------- */
-/*  CERTIFICACIONES                                                            */
-/*  TODO: sustituye estos ejemplos por tus certificados reales. Añade el       */
-/*  `credentialUrl` para que cada tarjeta enlace a la credencial verificable.  */
+/*  FORMACIÓN Y CERTIFICACIONES                                                */
 /* -------------------------------------------------------------------------- */
 
-export const certifications: Certification[] = [
-  {
-    title: 'Meta Front-End Developer',
-    issuer: 'Coursera · Meta',
-    date: '2024',
-    skills: ['React', 'JavaScript', 'UX/UI'],
-    // credentialUrl: 'https://coursera.org/verify/professional-cert/XXXX',
-  },
-  {
-    title: 'Google Data Analytics',
-    issuer: 'Coursera · Google',
-    date: '2023',
-    skills: ['SQL', 'Análisis de datos', 'Visualización'],
-    // credentialUrl: 'https://coursera.org/verify/professional-cert/XXXX',
-  },
-  {
-    title: 'Scrum Foundation (SFPC)',
-    issuer: 'CertiProf',
-    date: '2023',
-    skills: ['Agile', 'Scrum'],
-    // credentialUrl: 'https://www.credly.com/badges/XXXX',
-  },
-];
+// TODO: completa la institución y el año de tu titulación.
+export const education: Education = {
+  degree: 'Ingeniería Informática',
+  institution: 'Universidad · año',
+  focus: ['Ingeniería de software', 'Bases de datos'],
+};
+
+/*
+ * Certificaciones: déjalo vacío hasta tener la primera credencial real —
+ * la sección muestra un estado vacío elegante. Cuando la tengas, añade:
+ *   { title, issuer, date, credentialUrl, skills: [...] }
+ */
+export const certifications: Certification[] = [];
 
 /* -------------------------------------------------------------------------- */
 /*  SECCIÓN "CONTACTO"                                                         */

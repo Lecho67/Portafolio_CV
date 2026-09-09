@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Menu, Moon, Sun, X } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { navItems, personal } from '../data';
 import type { Theme } from '../hooks/useTheme';
 import { useActiveSection } from '../hooks/useActiveSection';
@@ -36,11 +36,11 @@ export function Navbar({ theme, onToggleTheme }: NavbarProps) {
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${
         scrolled
-          ? 'border-b border-slate-200/70 bg-white/80 backdrop-blur-md dark:border-slate-800/70 dark:bg-slate-950/80'
+          ? 'border-b border-slate-200/70 bg-[#f6f8fb]/80 backdrop-blur-md dark:border-ink-700/70 dark:bg-ink/80'
           : 'border-b border-transparent'
       }`}
     >
-      <nav className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
+      <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         {/* Logo / Nombre */}
         <a
           href="#top"
@@ -97,7 +97,7 @@ export function Navbar({ theme, onToggleTheme }: NavbarProps) {
 
       {/* Menú desplegable (móvil) */}
       {open && (
-        <div className="border-t border-slate-200 bg-white px-6 py-4 md:hidden dark:border-slate-800 dark:bg-slate-950">
+        <div className="border-t border-slate-200 bg-[#f6f8fb] px-6 py-4 md:hidden dark:border-ink-700 dark:bg-ink">
           <div className="flex flex-col gap-1">
             {navItems.map((item) => {
               const isActive = active === item.href.slice(1);
@@ -124,16 +124,16 @@ export function Navbar({ theme, onToggleTheme }: NavbarProps) {
   );
 }
 
-/** Botón para alternar entre modo oscuro y claro. */
+/** Toggle de tema como etiqueta en mono (muestra el tema al que cambiar). */
 function ThemeToggle({ theme, onToggle }: { theme: Theme; onToggle: () => void }) {
   return (
     <button
       type="button"
       onClick={onToggle}
       aria-label={theme === 'dark' ? 'Activar modo claro' : 'Activar modo oscuro'}
-      className="rounded-md p-2 text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
+      className="ml-2 rounded-md px-2 py-1.5 font-mono text-[0.7rem] font-medium uppercase tracking-[0.18em] text-slate-500 transition-colors hover:text-brand-600 dark:text-slate-400 dark:hover:text-brand-400"
     >
-      {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+      {theme === 'dark' ? 'Claro' : 'Oscuro'}
     </button>
   );
 }

@@ -4,7 +4,7 @@ import { Hero } from './components/Hero';
 import { About } from './components/About';
 import { Projects } from './components/Projects';
 import { Skills } from './components/Skills';
-import { Certifications } from './components/Certifications';
+import { Education } from './components/Education';
 import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
 import { ProjectDetail } from './components/ProjectDetail';
@@ -39,7 +39,7 @@ export default function App() {
   }, [route]);
 
   return (
-    <div className="min-h-screen bg-white text-slate-700 transition-colors duration-300 dark:bg-slate-950 dark:text-slate-300">
+    <div className="min-h-screen bg-[#f6f8fb] text-slate-700 transition-colors duration-300 dark:bg-ink dark:text-slate-300">
       <Navbar theme={theme} onToggleTheme={toggleTheme} />
 
       {route.name === 'project' ? (
@@ -52,7 +52,7 @@ export default function App() {
           <About />
           <Projects />
           <Skills />
-          <Certifications />
+          <Education />
           <Contact />
         </main>
       )}
