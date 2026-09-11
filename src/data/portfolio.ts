@@ -133,6 +133,10 @@ export interface Certification {
   credentialUrl?: string;
   /** Temas / tecnologías cubiertas (opcional) */
   skills?: string[];
+  /** De qué trata el curso (se muestra al abrir el detalle) */
+  description?: string;
+  /** Qué te aportó / qué aprendiste (lista de puntos, detalle) */
+  contribution?: string[];
 }
 
 /* -------------------------------------------------------------------------- */
@@ -433,11 +437,52 @@ export const education: Education = {
 };
 
 /*
- * Certificaciones: déjalo vacío hasta tener la primera credencial real —
- * la sección muestra un estado vacío elegante. Cuando la tengas, añade:
- *   { title, issuer, date, credentialUrl, skills: [...] }
+ * Certificaciones reales (Coursera). Si en algún momento el array queda
+ * vacío, la sección vuelve a mostrar el estado vacío elegante automáticamente.
+ * `description` y `contribution` alimentan el detalle que se abre al hacer clic.
  */
-export const certifications: Certification[] = [];
+export const certifications: Certification[] = [
+  {
+    title: 'Kotlin for Java Developers',
+    issuer: 'Coursera · JetBrains',
+    date: '2026',
+    credentialUrl: 'https://coursera.org/verify/S9Q7WLVL6I40',
+    skills: ['Kotlin', 'Java'],
+    description:
+      'Curso de JetBrains (creadores de Kotlin) sobre cómo pasar de Java a Kotlin: sintaxis, interoperabilidad entre ambos lenguajes y las funcionalidades que Kotlin añade sobre Java —null safety, funciones de extensión, data classes, programación funcional— con ejercicios prácticos de código.',
+    contribution: [
+      'Entender a fondo el porqué de las decisiones de diseño de Kotlin frente a Java, no solo la sintaxis.',
+      'Null safety, funciones de extensión y data classes: los mismos fundamentos que uso en el desarrollo Android de UESValle.',
+      'Escribir Kotlin más idiomático en vez de "Java traducido".',
+    ],
+  },
+  {
+    title: 'Getting Started with Azure',
+    issuer: 'Coursera · LearnQuest',
+    date: '2025',
+    credentialUrl: 'https://coursera.org/verify/5PUTTRZHDO30',
+    skills: ['Azure', 'Cloud'],
+    description:
+      'Introducción a Microsoft Azure: conceptos de computación en la nube, los servicios core (cómputo, almacenamiento, redes) y cómo moverse en el portal de Azure para desplegar y gestionar recursos.',
+    contribution: [
+      'Vocabulario y modelo mental de cloud computing más allá de Vercel/Supabase, que es donde despliego mis proyectos hoy.',
+      'Panorama de los servicios base de Azure (cómputo, almacenamiento, redes) para poder evaluar cuándo tiene sentido usarlos.',
+    ],
+  },
+  {
+    title: 'Developing Interpersonal Skills',
+    issuer: 'Coursera · IBM',
+    date: '2025',
+    credentialUrl: 'https://coursera.org/verify/NDTQSPAHMQ0K',
+    skills: ['Comunicación', 'Trabajo en equipo'],
+    description:
+      'Curso de IBM sobre habilidades interpersonales en el trabajo: comunicación efectiva, escucha activa, inteligencia emocional y colaboración en equipos.',
+    contribution: [
+      'Herramientas concretas para comunicar decisiones técnicas a personas no técnicas —clientes, usuarios de UESValle— sin perder precisión.',
+      'Mejor manejo de la retroalimentación al trabajar con equipos multidisciplinarios.',
+    ],
+  },
+];
 
 /* -------------------------------------------------------------------------- */
 /*  SECCIÓN "CONTACTO"                                                         */
