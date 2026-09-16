@@ -59,10 +59,10 @@ function Portrait() {
   const showPhoto = Boolean(personal.photo) && !failed;
 
   return (
-    <div className="relative h-40 w-36 sm:h-44 sm:w-40">
+    <div className="relative h-52 w-48 sm:h-64 sm:w-56 lg:h-72 lg:w-64">
       <div
         aria-hidden
-        className="absolute -inset-3 -z-10 rounded-[1.75rem] bg-gradient-to-br from-brand-500/25 to-brand-400/5 blur-xl dark:from-brand-500/30 dark:to-brand-400/5"
+        className="absolute -inset-4 -z-10 rounded-[2rem] bg-gradient-to-br from-brand-500/25 to-brand-400/5 blur-xl dark:from-brand-500/30 dark:to-brand-400/5"
       />
       {showPhoto ? (
         <img
@@ -73,7 +73,7 @@ function Portrait() {
         />
       ) : (
         <div className="grid h-full w-full place-items-center rounded-2xl border border-slate-200 bg-brand-500/10 dark:border-ink-700">
-          <span className="font-display text-4xl font-bold text-brand-500 dark:text-brand-400">
+          <span className="font-display text-6xl font-bold text-brand-500 dark:text-brand-400">
             {personal.initials}
           </span>
         </div>
