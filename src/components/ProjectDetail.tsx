@@ -1,5 +1,14 @@
 import { useEffect, useState, type ReactNode } from 'react';
-import { ArrowLeft, ArrowRight, Check, ExternalLink, ImageOff, X } from 'lucide-react';
+import {
+  ArrowLeft,
+  ArrowRight,
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  ExternalLink,
+  ImageOff,
+  X,
+} from 'lucide-react';
 import { getProjectBySlug, projects, type ProjectImage } from '../data';
 import { Reveal } from './Reveal';
 
@@ -289,7 +298,7 @@ function Gallery({ images }: { images: ProjectImage[] }) {
 
       {active !== null && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-ink/95 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-[100] flex flex-col items-center justify-center gap-4 bg-ink/95 p-4 backdrop-blur-sm sm:p-8"
           onClick={() => setActive(null)}
           role="dialog"
           aria-modal="true"
@@ -303,12 +312,56 @@ function Gallery({ images }: { images: ProjectImage[] }) {
           >
             <X size={20} />
           </button>
-          <img
-            src={images[active].src}
-            alt={images[active].alt}
-            className="max-h-[85vh] max-w-full rounded-lg object-contain"
+
+          {images.length > 1 && (
+            <button
+              type="button"
+              aria-label="Anterior"
+              onClick={(e) => {
+                e.stopPropagation();
+                setActive((i) => (i === null ? i : (i - 1 + images.length) % images.length));
+              }}
+              className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-white/10 p-2 text-white transition-colors hover:bg-white/20 sm:left-4"
+            >
+              <ChevronLeft size={22} />
+            </button>
+          )}
+
+          {/* Contenedor con ancho propio: la imagen crece para llenarlo (no se
+              queda a su tamaño "natural" si el archivo es de menor resolución). */}
+          <div
+            className="flex max-h-[85vh] w-full max-w-5xl items-center justify-center"
             onClick={(e) => e.stopPropagation()}
-          />
+          >
+            <img
+              src={images[active].src}
+              alt={images[active].alt}
+              className="max-h-[85vh] w-full rounded-xl object-contain shadow-2xl ring-1 ring-white/10"
+            />
+          </div>
+
+          {images.length > 1 && (
+            <button
+              type="button"
+              aria-label="Siguiente"
+              onClick={(e) => {
+                e.stopPropagation();
+                setActive((i) => (i === null ? i : (i + 1) % images.length));
+              }}
+              className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-white/10 p-2 text-white transition-colors hover:bg-white/20 sm:right-4"
+            >
+              <ChevronRight size={22} />
+            </button>
+          )}
+
+          {images.length > 1 && (
+            <p
+              className="font-mono text-xs tracking-wider text-white/60"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {active + 1} / {images.length}
+            </p>
+          )}
         </div>
       )}
     </>
