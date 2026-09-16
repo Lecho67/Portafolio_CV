@@ -171,6 +171,13 @@ export const personal = {
   ],
   /** Frase-narrativa junto al objeto 3D del hero */
   flow: ['datos', 'modelo', 'producto'],
+  /**
+   * Foto de perfil para "Sobre mí". Coloca el archivo en
+   * `public/simon-colonia.jpg` (vertical o cuadrada, mínimo ~600px de ancho;
+   * se recorta a un marco vertical, así que céntrate en encuadrar bien la
+   * cara). Mientras el archivo no exista, se muestran las iniciales.
+   */
+  photo: '/simon-colonia.jpg',
   /** Ruta al CV. Coloca el archivo en `public/cv.pdf`. */
   resumeUrl: '/cv.pdf',
 };
