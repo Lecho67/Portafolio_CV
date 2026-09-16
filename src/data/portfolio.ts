@@ -65,7 +65,7 @@ export interface Education {
 }
 
 export interface ProjectImage {
-  /** Ruta dentro de `public/`, p. ej. '/proyectos/bordercheck-1.png' */
+  /** Ruta dentro de `public/`, p. ej. '/proyectos/easy-customs-1.png' */
   src: string;
   /** Texto alternativo accesible (describe qué se ve en la captura) */
   alt: string;
@@ -265,8 +265,8 @@ export const pillars: Pillar[] = [
  */
 export const projects: Project[] = [
   {
-    slug: 'bordercheck-ai',
-    title: 'BorderCheck AI',
+    slug: 'easy-customs',
+    title: 'Easy Customs',
     description:
       'Plataforma web B2C de asesoría aduanera con IA: el usuario describe su envío internacional y la app le dice si pasará la aduana —veredicto Apto / Advertencia / Bloqueado con su justificación legal y el desglose de tributos—, con casillero virtual, KYC y auditoría humana de cada veredicto.',
     tags: [
@@ -287,12 +287,14 @@ export const projects: Project[] = [
     timeline: '2025 — en desarrollo activo',
     team: 'Yo: frontend + Supabase · motor de IA: un colaborador',
     context: 'Proyecto personal · MVP funcional',
-    // Repo privado por ahora — se enlaza solo la demo.
+    // Repo privado por ahora — se enlaza solo la demo. (El repo real puede
+    // seguir llamándose BorderCheck-AI_Frontend aunque el producto ahora se
+    // llame Easy Customs; ajusta la URL si el repo también cambió de nombre.)
     // repoUrl: 'https://github.com/Lecho67/BorderCheck-AI_Frontend',
     liveUrl: 'https://border-check-ai-frontend.vercel.app',
     overview: [
       'Los envíos internacionales se retienen, devuelven o destruyen en aduana por restricciones que el remitente desconoce —baterías de litio, aerosoles, productos regulados—. Resolverlo después toma días y genera multas y sobrecostes evitables.',
-      'BorderCheck AI se consulta antes del despacho: el usuario describe su envío y recibe un veredicto —Apto, Advertencia o Bloqueado— con su justificación legal, los documentos que necesita y una estimación de tributos. La IA no responde en abierto: se ancla a una base de reglas normativas y cada veredicto cita su fuente; cuando faltan datos, marca el caso para revisión humana en vez de forzar un resultado.',
+      'Easy Customs se consulta antes del despacho: el usuario describe su envío y recibe un veredicto —Apto, Advertencia o Bloqueado— con su justificación legal, los documentos que necesita y una estimación de tributos. La IA no responde en abierto: se ancla a una base de reglas normativas y cada veredicto cita su fuente; cuando faltan datos, marca el caso para revisión humana en vez de forzar un resultado.',
       'Yo diseñé e implementé todo el frontend y la capa de datos y seguridad en Supabase. El motor de reglas aduaneras lo mantiene un colaborador en un repositorio aparte, y el frontend está pensado para funcionar sin él (usa un mock determinista), por eso la demo desplegada funciona por sí sola.',
     ],
     contributions: [
@@ -314,13 +316,15 @@ export const projects: Project[] = [
       'El motor de reglas de IA es de un colaborador y vive en otro repositorio; la demo pública corre contra un mock determinista, no contra el modelo.',
       'Infraestructura sobre capas gratuitas (Vercel, Supabase).',
     ],
+    // Capturas reales de la app. Guarda cada archivo en `public/proyectos/`
+    // con este mismo nombre y aparecen solas (si falta alguna, la galería
+    // muestra un marcador en su lugar, sin romper el layout).
     images: [
-      // { src: '/proyectos/bordercheck-landing.png', alt: 'Landing con el pitch y los tres badges de veredicto' },
-      // { src: '/proyectos/bordercheck-asistente.png', alt: 'Asistente de evaluación de envíos (formulario)' },
-      // { src: '/proyectos/bordercheck-veredicto.png', alt: 'Vista de veredicto: badge de color, justificación legal y desglose de tributos' },
-      // { src: '/proyectos/bordercheck-cola-revision.png', alt: 'Cola de revisión del agente con filtros y el drawer de auditoría de un caso' },
-      // { src: '/proyectos/bordercheck-metricas.png', alt: 'Dashboard de métricas del admin con el volumen mensual de consultas' },
-      // { src: '/proyectos/bordercheck-kyc.png', alt: 'Panel de aprobación de KYC' },
+      { src: '/proyectos/easycustoms-landing.png', alt: 'Landing: «Sabe si tu envío pasará la aduana, antes de despacharlo»' },
+      { src: '/proyectos/easycustoms-login.png', alt: 'Pantalla de inicio de sesión' },
+      { src: '/proyectos/easycustoms-dashboard.png', alt: 'Dashboard con las consultas recientes y su veredicto (Apto / Advertencia)' },
+      { src: '/proyectos/easycustoms-nueva-consulta.png', alt: 'Formulario de nueva consulta: datos de logística del envío (paso 1 de 8)' },
+      { src: '/proyectos/easycustoms-verificar-identidad.png', alt: 'Verificación de identidad (KYC) para habilitar el casillero' },
     ],
   },
   {
