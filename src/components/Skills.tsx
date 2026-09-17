@@ -6,7 +6,7 @@ import { TechIcon } from './TechIcon';
 /** "Stack por capa": habilidades agrupadas, con logo de marca cuando existe. */
 export function Skills() {
   return (
-    <Section id="skills" index="03" kicker="Habilidades" title="Stack por capa.">
+    <Section id="skills" index="04" kicker="Habilidades" title="Stack por capa.">
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {skillCategories.map((category, i) => (
           <Reveal key={category.title} delay={i * 70} className="h-full">

@@ -73,6 +73,17 @@ export interface Language {
   level: string;
 }
 
+/** Experiencia laboral — sección "Experiencia" (línea de tiempo). */
+export interface WorkExperience {
+  company: string;
+  role: string;
+  /** Rango de fechas, p. ej. 'Jul 2024 — abr. 2026' */
+  period: string;
+  description: string[];
+  /** Si el trabajo tiene su propio caso de estudio en "Proyectos", enlaza a él. */
+  projectSlug?: string;
+}
+
 export interface ProjectImage {
   /** Ruta dentro de `public/`, p. ej. '/proyectos/easy-customs-1.png' */
   src: string;
@@ -207,6 +218,7 @@ export const socials: SocialLink[] = [
 
 export const navItems: NavItem[] = [
   { label: 'Sobre mí', href: '#about' },
+  { label: 'Experiencia', href: '#experience' },
   { label: 'Proyectos', href: '#projects' },
   { label: 'Habilidades', href: '#skills' },
   { label: 'Formación', href: '#education' },
@@ -259,6 +271,33 @@ export const pillars: Pillar[] = [
     title: 'LLMs anclados a reglas',
     description:
       'IA que cita su fuente y deriva a revisión humana cuando faltan datos, en vez de improvisar.',
+  },
+];
+
+/* -------------------------------------------------------------------------- */
+/*  EXPERIENCIA LABORAL                                                        */
+/* -------------------------------------------------------------------------- */
+
+// TODO: confirma el cargo exacto de cada rol y si UESValle sigue vigente
+// (si es así, cambia el período a 'Jul 2024 — actualidad').
+export const experiences: WorkExperience[] = [
+  {
+    company: 'UESValle',
+    role: 'Desarrollo y procesos institucionales',
+    period: 'Jul 2024 — abr. 2026',
+    description: [
+      'Además del desarrollo de producto (ver el caso completo abajo), lideré el levantamiento de requerimientos con las áreas de la entidad y la construcción de formularios dinámicos y herramientas de limpieza de datos en Power BI.',
+      'Ese trabajo de digitalización de procesos internos, antes manuales, mejoró en un 85% los tiempos de gestión.',
+    ],
+    projectSlug: 'uesvalle',
+  },
+  {
+    company: 'VortexBird',
+    role: 'Desarrollo full-stack',
+    period: 'Mar 2023 — jun. 2024',
+    description: [
+      'Desarrollo full-stack de una plataforma de gamificación, contribuyendo a funcionalidades de producto de principio a fin.',
+    ],
   },
 ];
 
@@ -340,20 +379,21 @@ export const projects: Project[] = [
     slug: 'uesvalle',
     title: 'UESValle',
     description:
-      'Plataforma web y app Android para el ecosistema digital de UESValle. En web participé en todo el ciclo —análisis de requerimientos, diseño de interfaces, frontend y backend en PHP/Laravel e integración de servicios— y en móvil desarrollé funcionalidades de la app nativa en Kotlin, siempre partiendo de necesidades reales de usuarios y procesos institucionales.',
-    tags: ['PHP', 'Laravel', 'MySQL', 'Kotlin', 'Android', 'REST'],
+      'Plataforma web y app Android para el ecosistema digital de UESValle, más liderazgo del levantamiento de requerimientos y de la digitalización de procesos institucionales antes manuales (formularios dinámicos, limpieza de datos en Power BI).',
+    tags: ['PHP', 'Laravel', 'MySQL', 'Kotlin', 'Android', 'Power BI', 'REST'],
     featured: true,
-    year: '2023', // TODO: confirma el año o rango
-    role: 'Full-stack + Android',
+    year: '2024 — 2026',
+    role: 'Full-stack + procesos institucionales',
     icon: Droplets,
     cover: 'from-teal-500 via-cyan-500 to-sky-600',
-    timeline: 'TODO: p. ej. «6 meses · 2023»',
+    timeline: 'Jul 2024 — abr. 2026', // TODO: confirma si el rol sigue vigente
     team: 'Equipo de desarrollo multidisciplinario',
     context: 'UESValle — saneamiento del Valle del Cauca',
     // repoUrl: 'https://github.com/Lecho67/...',
     overview: [
       'UESValle mantiene un conjunto de herramientas digitales —web y móviles— para sus procesos institucionales y para la atención a los usuarios. El trabajo consistió en construir nuevas funcionalidades y hacer evolucionar las existentes, siempre partiendo de las necesidades reales de los usuarios y de los procesos de la entidad.',
-      'Cada solución seguía el mismo recorrido: entender la necesidad, analizar los requerimientos, definir una solución funcional y técnica, diseñar los flujos e interfaces, desarrollarla, integrarla con el resto del sistema y ajustarla con la retroalimentación recibida.',
+      'Más allá del desarrollo, buena parte de los procesos internos de la entidad seguían siendo manuales. Lideré el levantamiento de esos requerimientos con las áreas involucradas y construí formularios dinámicos y herramientas de limpieza de datos en Power BI para digitalizarlos.',
+      'Cada solución —de desarrollo o de datos— seguía el mismo recorrido: entender la necesidad, analizar los requerimientos, definir una solución funcional y técnica, diseñar los flujos e interfaces, desarrollarla, integrarla con el resto del sistema y ajustarla con la retroalimentación recibida.',
     ],
     contributions: [
       'Análisis de requerimientos: traducir necesidades de negocio y de usuarios en especificaciones funcionales y técnicas para el equipo.',
@@ -361,13 +401,14 @@ export const projects: Project[] = [
       'Desarrollo frontend y backend en PHP/Laravel de funcionalidades en varios módulos de la plataforma, con su lógica de negocio y gestión de información.',
       'Integración entre frontend, servicios backend y fuentes de datos: consumo de APIs, procesamiento de datos y manejo de estados y respuestas.',
       'Desarrollo de funcionalidades para la app Android nativa en Kotlin.',
+      'Levantamiento de requerimientos y liderazgo del proceso de digitalización: formularios dinámicos y limpieza/consolidación de datos en Power BI para procesos que antes eran manuales.',
       'Mejora continua de funcionalidades existentes y resolución de problemas técnicos durante el ciclo de desarrollo.',
     ],
     outcomes: [
       'Herramientas digitales que agilizan procesos internos y facilitan la interacción de los usuarios con los servicios de la entidad.',
       'Un enfoque integral en cada solución: análisis funcional, experiencia de usuario y desarrollo técnico.',
       'Sistemas mantenibles y preparados para seguir evolucionando con nuevos requerimientos.',
-      'TODO: añade un dato concreto si lo tienes (nº de módulos, usuarios, reducción de tiempos…).',
+      'La digitalización de procesos antes manuales (formularios dinámicos + Power BI) mejoró en un 85% los tiempos de gestión.',
     ],
     images: [
       // { src: '/proyectos/uesvalle-1.png', alt: 'Descripción de la captura' },

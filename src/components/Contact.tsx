@@ -20,7 +20,7 @@ const rows = [
 /** "05 — Contacto": encabezado + accesos directos (correo, LinkedIn, GitHub). */
 export function Contact() {
   return (
-    <Section id="contact" index="05" kicker="Contacto" title={contact.heading} subtitle={contact.message}>
+    <Section id="contact" index="06" kicker="Contacto" title={contact.heading} subtitle={contact.message}>
       <Reveal className="mt-2 grid gap-3 sm:max-w-lg">
         {rows.map((row) => (
           <a

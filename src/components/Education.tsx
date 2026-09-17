@@ -23,7 +23,7 @@ export function Education() {
   const activeCert = openIndex !== null ? certifications[openIndex] : null;
 
   return (
-    <Section id="education" index="04" kicker="Formación y certificaciones" title="Formación.">
+    <Section id="education" index="05" kicker="Formación y certificaciones" title="Formación.">
       {/* Titulación + idiomas */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-stretch">
         <Reveal
