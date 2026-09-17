@@ -62,6 +62,15 @@ export interface Education {
   institution: string;
   /** Énfasis / áreas destacadas */
   focus: string[];
+  /** Programas adicionales más cortos (diplomados, escuelas), sin tarjeta propia */
+  additional?: string[];
+}
+
+/** Idioma hablado, para la sección "Formación". */
+export interface Language {
+  name: string;
+  /** Nivel, p. ej. 'Nativo' o 'B2' */
+  level: string;
 }
 
 export interface ProjectImage {
@@ -382,6 +391,7 @@ export const skillCategories: SkillCategory[] = [
     skills: [
       { name: 'React', icon: 'react' },
       { name: 'TypeScript', icon: 'typescript' },
+      { name: 'JavaScript', icon: 'javascript' },
       { name: 'Tailwind CSS', icon: 'tailwindcss' },
       { name: 'Vite', icon: 'vite' },
       { name: 'React Query', icon: 'reactquery' },
@@ -396,6 +406,7 @@ export const skillCategories: SkillCategory[] = [
       { name: 'Supabase', icon: 'supabase' },
       { name: 'NestJS', icon: 'nestjs' },
       { name: 'Node.js', icon: 'nodejs' },
+      { name: 'MongoDB', icon: 'mongodb' },
       { name: 'APIs REST' },
     ],
   },
@@ -404,6 +415,7 @@ export const skillCategories: SkillCategory[] = [
     icon: Smartphone,
     skills: [
       { name: 'Kotlin', icon: 'kotlin' },
+      { name: 'Java' },
       { name: 'Android', icon: 'android' },
       { name: 'Jetpack Compose', icon: 'jetpackcompose' },
       { name: 'Room' },
@@ -418,6 +430,8 @@ export const skillCategories: SkillCategory[] = [
       { name: 'Python', icon: 'python' },
       { name: 'pandas', icon: 'pandas' },
       { name: 'scikit-learn', icon: 'scikitlearn' },
+      { name: 'Power BI' },
+      { name: 'Excel' },
       { name: 'XGBoost' },
       { name: 'LightGBM' },
     ],
@@ -430,6 +444,7 @@ export const skillCategories: SkillCategory[] = [
       { name: 'PostgreSQL', icon: 'postgresql' },
       { name: 'MySQL', icon: 'mysql' },
       { name: 'Git', icon: 'git' },
+      { name: 'Postman', icon: 'postman' },
       { name: 'Vercel', icon: 'vercel' },
       { name: 'Linux', icon: 'linux' },
     ],
@@ -440,12 +455,19 @@ export const skillCategories: SkillCategory[] = [
 /*  FORMACIÓN Y CERTIFICACIONES                                                */
 /* -------------------------------------------------------------------------- */
 
-// TODO: completa la institución y el año de tu titulación.
+// TODO: confirma el año de grado (no aparece en la hoja de vida).
 export const education: Education = {
   degree: 'Ingeniería Informática',
-  institution: 'Universidad · año',
+  institution: 'Universidad Autónoma de Occidente (UAO)',
   focus: ['Ingeniería de software', 'Bases de datos'],
+  additional: ['Escuela de Liderazgo · UAO'],
 };
+
+/** Idiomas — sección "Formación". */
+export const languages: Language[] = [
+  { name: 'Español', level: 'Nativo' },
+  { name: 'Inglés', level: 'B2' },
+];
 
 /*
  * Certificaciones reales (Coursera). Si en algún momento el array queda
@@ -493,6 +515,9 @@ export const certifications: Certification[] = [
       'Mejor manejo de la retroalimentación al trabajar con equipos multidisciplinarios.',
     ],
   },
+  // TODO: tu hoja de vida menciona "English for Career Development" (Coursera)
+  // pero sin año ni link de verificación. Dime esos dos datos y la añado con
+  // el mismo formato que las de arriba.
 ];
 
 /* -------------------------------------------------------------------------- */

@@ -27,6 +27,9 @@ import {
   siScikitlearn,
   siNumpy,
   siJupyter,
+  siJavascript,
+  siMongodb,
+  siPostman,
   type SimpleIcon,
 } from 'simple-icons';
 
@@ -66,6 +69,9 @@ const ICONS: Record<string, SimpleIcon> = {
   scikitlearn: siScikitlearn,
   numpy: siNumpy,
   jupyter: siJupyter,
+  javascript: siJavascript,
+  mongodb: siMongodb,
+  postman: siPostman,
 };
 
 interface TechIconProps {
