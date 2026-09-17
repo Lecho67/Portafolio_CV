@@ -7,6 +7,7 @@ import {
   ChevronRight,
   ExternalLink,
   ImageOff,
+  Maximize2,
   X,
 } from 'lucide-react';
 import { getProjectBySlug, projects, type ProjectImage } from '../data';
@@ -253,6 +254,7 @@ function Block({ title, children }: { title: string; children: ReactNode }) {
 
 function Gallery({ images }: { images: ProjectImage[] }) {
   const [active, setActive] = useState<number | null>(null);
+  const [visible, setVisible] = useState(false);
 
   // Con el visor abierto: navegación por teclado y bloqueo del scroll de fondo.
   useEffect(() => {
@@ -272,6 +274,16 @@ function Gallery({ images }: { images: ProjectImage[] }) {
     };
   }, [active, images.length]);
 
+  // Transición de entrada (se ignora con prefers-reduced-motion vía `motion-safe:`).
+  useEffect(() => {
+    if (active === null) {
+      setVisible(false);
+      return;
+    }
+    const id = requestAnimationFrame(() => requestAnimationFrame(() => setVisible(true)));
+    return () => cancelAnimationFrame(id);
+  }, [active]);
+
   if (images.length === 0) {
     return (
       <div className="grid place-items-center rounded-2xl border border-dashed border-slate-300 bg-slate-50/60 py-14 dark:border-ink-600 dark:bg-ink-900/50">
@@ -290,17 +302,25 @@ function Gallery({ images }: { images: ProjectImage[] }) {
           <button
             key={img.src}
             type="button"
+            aria-label={`Ampliar: ${img.alt}`}
             onClick={() => setActive(i)}
-            className="group relative h-64 overflow-hidden rounded-xl border border-slate-200 bg-slate-100 sm:h-72 dark:border-ink-700 dark:bg-ink-800"
+            className="group relative h-64 cursor-zoom-in overflow-hidden rounded-xl border border-slate-200 bg-slate-100 transition-colors hover:border-brand-500/45 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 sm:h-72 dark:border-ink-700 dark:bg-ink-800 dark:hover:border-brand-500/45"
           >
             <GalleryImage img={img} />
+            <span className="pointer-events-none absolute inset-0 flex items-center justify-center bg-ink/0 opacity-0 transition-all duration-200 group-hover:bg-ink/40 group-hover:opacity-100 group-focus-visible:bg-ink/40 group-focus-visible:opacity-100">
+              <span className="grid h-10 w-10 place-items-center rounded-full bg-white/15 text-white backdrop-blur-sm">
+                <Maximize2 size={18} />
+              </span>
+            </span>
           </button>
         ))}
       </div>
 
       {active !== null && (
         <div
-          className="fixed inset-0 z-[100] flex flex-col items-center justify-center gap-4 bg-ink/95 p-4 backdrop-blur-sm sm:p-8"
+          className={`fixed inset-0 z-[100] flex flex-col items-center justify-center gap-4 bg-ink/95 p-4 backdrop-blur-md motion-safe:transition-opacity motion-safe:duration-200 sm:p-8 ${
+            visible ? '' : 'motion-safe:opacity-0'
+          }`}
           onClick={() => setActive(null)}
           role="dialog"
           aria-modal="true"
@@ -310,7 +330,7 @@ function Gallery({ images }: { images: ProjectImage[] }) {
             type="button"
             aria-label="Cerrar"
             onClick={() => setActive(null)}
-            className="absolute right-4 top-4 rounded-full bg-white/10 p-2 text-white transition-colors hover:bg-white/20"
+            className="absolute right-4 top-4 rounded-full bg-white/10 p-2.5 text-white transition-all hover:scale-110 hover:bg-white/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
           >
             <X size={20} />
           </button>
@@ -323,7 +343,7 @@ function Gallery({ images }: { images: ProjectImage[] }) {
                 e.stopPropagation();
                 setActive((i) => (i === null ? i : (i - 1 + images.length) % images.length));
               }}
-              className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-white/10 p-2 text-white transition-colors hover:bg-white/20 sm:left-4"
+              className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-white/10 p-2.5 text-white transition-all hover:scale-110 hover:bg-white/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 sm:left-4"
             >
               <ChevronLeft size={22} />
             </button>
@@ -334,7 +354,9 @@ function Gallery({ images }: { images: ProjectImage[] }) {
               Si hay más de una imagen, hacer clic en ella avanza a la siguiente
               (además de las flechas), para que no se sienta "estática". */}
           <div
-            className="flex max-h-[85vh] w-full max-w-5xl items-center justify-center"
+            className={`flex max-h-[85vh] w-full max-w-5xl items-center justify-center motion-safe:transition-transform motion-safe:duration-200 ${
+              visible ? 'motion-safe:scale-100' : 'motion-safe:scale-95'
+            }`}
             onClick={(e) => {
               e.stopPropagation();
               if (images.length > 1) {
@@ -359,7 +381,7 @@ function Gallery({ images }: { images: ProjectImage[] }) {
                 e.stopPropagation();
                 setActive((i) => (i === null ? i : (i + 1) % images.length));
               }}
-              className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-white/10 p-2 text-white transition-colors hover:bg-white/20 sm:right-4"
+              className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-white/10 p-2.5 text-white transition-all hover:scale-110 hover:bg-white/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 sm:right-4"
             >
               <ChevronRight size={22} />
             </button>
