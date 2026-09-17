@@ -124,11 +124,6 @@ export function ProjectDetail({ slug }: ProjectDetailProps) {
         </Reveal>
       )}
 
-      {/* Galería */}
-      <Reveal delay={120}>
-        <Gallery images={images} />
-      </Reveal>
-
       {/* Contenido */}
       <div className="mt-14 space-y-12">
         {overview.length > 0 && (
@@ -207,6 +202,13 @@ export function ProjectDetail({ slug }: ProjectDetailProps) {
             </div>
           </Reveal>
         )}
+
+        {/* Galería: al final, como respaldo visual de todo lo contado arriba. */}
+        <Reveal>
+          <Block title="Capturas">
+            <Gallery images={images} />
+          </Block>
+        </Reveal>
       </div>
 
       {/* Navegación entre proyectos */}
@@ -272,7 +274,7 @@ function Gallery({ images }: { images: ProjectImage[] }) {
 
   if (images.length === 0) {
     return (
-      <div className="mt-10 grid place-items-center rounded-2xl border border-dashed border-slate-300 bg-slate-50/60 py-14 dark:border-ink-600 dark:bg-ink-900/50">
+      <div className="grid place-items-center rounded-2xl border border-dashed border-slate-300 bg-slate-50/60 py-14 dark:border-ink-600 dark:bg-ink-900/50">
         <div className="flex flex-col items-center gap-2 text-slate-400 dark:text-slate-500">
           <ImageOff size={24} />
           <p className="font-mono text-xs uppercase tracking-[0.14em]">Capturas próximamente</p>
@@ -283,7 +285,7 @@ function Gallery({ images }: { images: ProjectImage[] }) {
 
   return (
     <>
-      <div className={`mt-10 grid gap-4 ${images.length === 1 ? 'grid-cols-1' : 'sm:grid-cols-2'}`}>
+      <div className={`grid gap-4 ${images.length === 1 ? 'grid-cols-1' : 'sm:grid-cols-2'}`}>
         {images.map((img, i) => (
           <button
             key={img.src}
@@ -328,15 +330,24 @@ function Gallery({ images }: { images: ProjectImage[] }) {
           )}
 
           {/* Contenedor con ancho propio: la imagen crece para llenarlo (no se
-              queda a su tamaño "natural" si el archivo es de menor resolución). */}
+              queda a su tamaño "natural" si el archivo es de menor resolución).
+              Si hay más de una imagen, hacer clic en ella avanza a la siguiente
+              (además de las flechas), para que no se sienta "estática". */}
           <div
             className="flex max-h-[85vh] w-full max-w-5xl items-center justify-center"
-            onClick={(e) => e.stopPropagation()}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (images.length > 1) {
+                setActive((i) => (i === null ? i : (i + 1) % images.length));
+              }
+            }}
           >
             <img
               src={images[active].src}
               alt={images[active].alt}
-              className="max-h-[85vh] w-full rounded-xl object-contain shadow-2xl ring-1 ring-white/10"
+              className={`max-h-[85vh] w-full rounded-xl object-contain shadow-2xl ring-1 ring-white/10 ${
+                images.length > 1 ? 'cursor-pointer' : ''
+              }`}
             />
           </div>
 
