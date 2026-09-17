@@ -1,4 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import {
   ArrowLeft,
   ArrowRight,
@@ -316,16 +317,17 @@ function Gallery({ images }: { images: ProjectImage[] }) {
         ))}
       </div>
 
-      {active !== null && (
-        <div
-          className={`fixed inset-0 z-[100] flex flex-col items-center justify-center gap-4 bg-ink/95 p-4 backdrop-blur-md motion-safe:transition-opacity motion-safe:duration-200 sm:p-8 ${
-            visible ? '' : 'motion-safe:opacity-0'
-          }`}
-          onClick={() => setActive(null)}
-          role="dialog"
-          aria-modal="true"
-          aria-label={images[active].alt}
-        >
+      {active !== null &&
+        createPortal(
+          <div
+            className={`fixed inset-0 z-[100] flex flex-col items-center justify-center gap-4 bg-ink/95 p-4 backdrop-blur-md motion-safe:transition-opacity motion-safe:duration-200 sm:p-8 ${
+              visible ? '' : 'motion-safe:opacity-0'
+            }`}
+            onClick={() => setActive(null)}
+            role="dialog"
+            aria-modal="true"
+            aria-label={images[active].alt}
+          >
           <button
             type="button"
             aria-label="Cerrar"
@@ -395,8 +397,9 @@ function Gallery({ images }: { images: ProjectImage[] }) {
               {active + 1} / {images.length}
             </p>
           )}
-        </div>
-      )}
+          </div>,
+          document.body,
+        )}
     </>
   );
 }
