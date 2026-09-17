@@ -8,7 +8,7 @@ export function Experience() {
   return (
     <Section
       id="experience"
-      index="02"
+      index="03"
       kicker="Trayectoria"
       title="Experiencia."
       subtitle="Más de 3 años combinando desarrollo de producto con procesos y datos en organizaciones reales."

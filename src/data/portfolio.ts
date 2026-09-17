@@ -218,8 +218,8 @@ export const socials: SocialLink[] = [
 
 export const navItems: NavItem[] = [
   { label: 'Sobre mí', href: '#about' },
-  { label: 'Experiencia', href: '#experience' },
   { label: 'Proyectos', href: '#projects' },
+  { label: 'Experiencia', href: '#experience' },
   { label: 'Habilidades', href: '#skills' },
   { label: 'Formación', href: '#education' },
   { label: 'Contacto', href: '#contact' },

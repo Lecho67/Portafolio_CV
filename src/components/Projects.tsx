@@ -8,7 +8,7 @@ export function Projects() {
   return (
     <Section
       id="projects"
-      index="03"
+      index="02"
       kicker="Trabajo"
       title="Proyectos"
       subtitle="Proyectos en los que he trabajado. Abre cualquiera para ver el problema, las decisiones de arquitectura y el resultado."
