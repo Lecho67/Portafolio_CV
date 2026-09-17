@@ -379,8 +379,8 @@ export const projects: Project[] = [
     slug: 'uesvalle',
     title: 'UESValle',
     description:
-      'Plataforma web y app Android para el ecosistema digital de UESValle, más liderazgo del levantamiento de requerimientos y de la digitalización de procesos institucionales antes manuales (formularios dinámicos, limpieza de datos en Power BI).',
-    tags: ['PHP', 'Laravel', 'MySQL', 'Kotlin', 'Android', 'Power BI', 'REST'],
+      'Plataforma web y app Android (Filtros Agua, con arquitectura MVVM) para el ecosistema digital de UESValle, más liderazgo del levantamiento de requerimientos y de la digitalización de procesos institucionales antes manuales (formularios dinámicos, limpieza de datos en Power BI).',
+    tags: ['PHP', 'Laravel', 'MySQL', 'Kotlin', 'Android', 'MVVM', 'Power BI', 'REST'],
     featured: true,
     year: '2024 — 2026',
     role: 'Full-stack + procesos institucionales',
@@ -400,7 +400,7 @@ export const projects: Project[] = [
       'Diseño y desarrollo de interfaces web con foco en usabilidad, accesibilidad, consistencia visual y adaptación a distintos dispositivos.',
       'Desarrollo frontend y backend en PHP/Laravel de funcionalidades en varios módulos de la plataforma, con su lógica de negocio y gestión de información.',
       'Integración entre frontend, servicios backend y fuentes de datos: consumo de APIs, procesamiento de datos y manejo de estados y respuestas.',
-      'Desarrollo de funcionalidades para la app Android nativa en Kotlin.',
+      'Desarrollo de Filtros Agua, la app Android nativa en Kotlin para el levantamiento de encuestas de acceso a agua y saneamiento en campo (12 secciones: información del responsable y del beneficiario, ubicación, composición demográfica, acceso y desplazamiento por agua, percepción, almacenamiento/tratamiento, contaminación, saneamiento, higiene y salud), estructurada con arquitectura MVVM.',
       'Levantamiento de requerimientos y liderazgo del proceso de digitalización: formularios dinámicos y limpieza/consolidación de datos en Power BI para procesos que antes eran manuales.',
       'Mejora continua de funcionalidades existentes y resolución de problemas técnicos durante el ciclo de desarrollo.',
     ],
@@ -410,8 +410,16 @@ export const projects: Project[] = [
       'Sistemas mantenibles y preparados para seguir evolucionando con nuevos requerimientos.',
       'La digitalización de procesos antes manuales (formularios dinámicos + Power BI) mejoró en un 85% los tiempos de gestión.',
     ],
+    // Capturas reales de Filtros Agua. Guarda cada archivo en
+    // `public/proyectos/` con este mismo nombre (si falta alguna, la galería
+    // muestra un marcador en su lugar, sin romper el layout).
     images: [
-      // { src: '/proyectos/uesvalle-1.png', alt: 'Descripción de la captura' },
+      { src: '/proyectos/uesvalle-filtrosagua-login.png', alt: 'Filtros Agua: pantalla de inicio de sesión con cédula y contraseña' },
+      { src: '/proyectos/uesvalle-filtrosagua-tipo-visita.png', alt: 'Selección del tipo de visita: primera visita o seguimiento' },
+      { src: '/proyectos/uesvalle-filtrosagua-beneficiario.png', alt: 'Formulario de información del beneficiario' },
+      { src: '/proyectos/uesvalle-filtrosagua-ubicacion.png', alt: 'Formulario de ubicación con departamento, municipio y vereda' },
+      { src: '/proyectos/uesvalle-filtrosagua-contaminacion.png', alt: 'Sección de contaminación y protección de la fuente de agua' },
+      { src: '/proyectos/uesvalle-filtrosagua-salud.png', alt: 'Sección final de salud, con observaciones y envío de la encuesta' },
     ],
   },
 ];
