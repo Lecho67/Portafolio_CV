@@ -300,20 +300,21 @@ function Gallery({ images }: { images: ProjectImage[] }) {
     <>
       <div className={`grid gap-4 ${images.length === 1 ? 'grid-cols-1' : 'sm:grid-cols-2'}`}>
         {images.map((img, i) => (
-          <button
-            key={img.src}
-            type="button"
-            aria-label={`Ampliar: ${img.alt}`}
-            onClick={() => setActive(i)}
-            className="group relative h-64 cursor-zoom-in overflow-hidden rounded-xl border border-slate-200 bg-slate-100 transition-colors hover:border-brand-500/45 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 sm:h-72 dark:border-ink-700 dark:bg-ink-800 dark:hover:border-brand-500/45"
-          >
-            <GalleryImage img={img} />
-            <span className="pointer-events-none absolute inset-0 flex items-center justify-center bg-ink/0 opacity-0 transition-all duration-200 group-hover:bg-ink/40 group-hover:opacity-100 group-focus-visible:bg-ink/40 group-focus-visible:opacity-100">
-              <span className="grid h-10 w-10 place-items-center rounded-full bg-white/15 text-white backdrop-blur-sm">
-                <Maximize2 size={18} />
+          <Reveal key={img.src} delay={i * 90}>
+            <button
+              type="button"
+              aria-label={`Ampliar: ${img.alt}`}
+              onClick={() => setActive(i)}
+              className="group relative h-64 w-full cursor-zoom-in overflow-hidden rounded-xl border border-slate-200 bg-slate-100 transition-colors duration-300 hover:-translate-y-1 hover:border-brand-500/45 hover:shadow-lg hover:shadow-brand-500/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 sm:h-72 dark:border-ink-700 dark:bg-ink-800 dark:hover:border-brand-500/45"
+            >
+              <GalleryImage img={img} />
+              <span className="pointer-events-none absolute inset-0 flex items-center justify-center bg-ink/0 opacity-0 transition-all duration-200 group-hover:bg-ink/40 group-hover:opacity-100 group-focus-visible:bg-ink/40 group-focus-visible:opacity-100">
+                <span className="grid h-10 w-10 scale-75 place-items-center rounded-full bg-white/15 text-white backdrop-blur-sm transition-transform duration-200 group-hover:scale-100">
+                  <Maximize2 size={18} />
+                </span>
               </span>
-            </span>
-          </button>
+            </button>
+          </Reveal>
         ))}
       </div>
 
