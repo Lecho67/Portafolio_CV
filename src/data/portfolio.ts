@@ -151,6 +151,8 @@ export interface Certification {
   date: string;
   /** Enlace a la credencial verificable (opcional) */
   credentialUrl?: string;
+  /** Texto del botón del enlace; por defecto 'Verificar credencial' */
+  credentialLabel?: string;
   /** Temas / tecnologías cubiertas (opcional) */
   skills?: string[];
   /** De qué trata el curso (se muestra al abrir el detalle) */
@@ -524,6 +526,21 @@ export const languages: Language[] = [
  * `description` y `contribution` alimentan el detalle que se abre al hacer clic.
  */
 export const certifications: Certification[] = [
+  {
+    title: 'Intermediate GitHub Concepts',
+    issuer: 'DataCamp',
+    date: '2026',
+    // Página del curso (no es un enlace de verificación de la credencial).
+    credentialUrl: 'https://www.datacamp.com/courses/intermediate-github-concepts',
+    credentialLabel: 'Ver el curso',
+    skills: ['Git', 'GitHub'],
+    description:
+      'Curso de DataCamp (3 horas) sobre el uso de GitHub más allá de lo básico: trabajo colaborativo en repositorios, ramas, pull requests e issues.',
+    contribution: [
+      'Un flujo de trabajo colaborativo más ordenado en GitHub: ramas, pull requests y revisión, en lugar de solo commits sobre main.',
+      'Base para seguir profesionalizando mis repositorios, como la integración continua con GitHub Actions que ya uso en Easy Customs.',
+    ],
+  },
   {
     title: 'Kotlin for Java Developers',
     issuer: 'Coursera · JetBrains',
