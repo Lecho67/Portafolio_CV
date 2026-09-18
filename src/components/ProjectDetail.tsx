@@ -256,6 +256,10 @@ function Block({ title, children }: { title: string; children: ReactNode }) {
 function Gallery({ images }: { images: ProjectImage[] }) {
   const [active, setActive] = useState<number | null>(null);
   const [visible, setVisible] = useState(false);
+  // Proporción real de cada imagen (ancho/alto), medida al cargarla, para que
+  // la casilla se ajuste a su forma en vez de dejar franjas vacías cuando es
+  // vertical (capturas de celular) junto a otras horizontales (de escritorio).
+  const [ratios, setRatios] = useState<Record<string, number>>({});
 
   // Con el visor abierto: navegación por teclado y bloqueo del scroll de fondo.
   useEffect(() => {
@@ -305,9 +309,15 @@ function Gallery({ images }: { images: ProjectImage[] }) {
               type="button"
               aria-label={`Ampliar: ${img.alt}`}
               onClick={() => setActive(i)}
-              className="group relative h-64 w-full cursor-zoom-in overflow-hidden rounded-xl border border-slate-200 bg-slate-100 transition-colors duration-300 hover:-translate-y-1 hover:border-brand-500/45 hover:shadow-lg hover:shadow-brand-500/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 sm:h-72 dark:border-ink-700 dark:bg-ink-800 dark:hover:border-brand-500/45"
+              style={{ aspectRatio: ratios[img.src] ?? 16 / 10 }}
+              className="group relative w-full max-h-[32rem] cursor-zoom-in overflow-hidden rounded-xl border border-slate-200 bg-slate-100 transition-colors duration-300 hover:-translate-y-1 hover:border-brand-500/45 hover:shadow-lg hover:shadow-brand-500/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 dark:border-ink-700 dark:bg-ink-800 dark:hover:border-brand-500/45"
             >
-              <GalleryImage img={img} />
+              <GalleryImage
+                img={img}
+                onRatio={(ratio) =>
+                  setRatios((prev) => (prev[img.src] ? prev : { ...prev, [img.src]: ratio }))
+                }
+              />
               <span className="pointer-events-none absolute inset-0 flex items-center justify-center bg-ink/0 opacity-0 transition-all duration-200 group-hover:bg-ink/40 group-hover:opacity-100 group-focus-visible:bg-ink/40 group-focus-visible:opacity-100">
                 <span className="grid h-10 w-10 scale-75 place-items-center rounded-full bg-white/15 text-white backdrop-blur-sm transition-transform duration-200 group-hover:scale-100">
                   <Maximize2 size={18} />
@@ -406,7 +416,13 @@ function Gallery({ images }: { images: ProjectImage[] }) {
 }
 
 /** Imagen con marcador de reserva si el archivo no existe todavía. */
-function GalleryImage({ img }: { img: ProjectImage }) {
+function GalleryImage({
+  img,
+  onRatio,
+}: {
+  img: ProjectImage;
+  onRatio: (ratio: number) => void;
+}) {
   const [failed, setFailed] = useState(false);
 
   if (failed) {
@@ -424,7 +440,11 @@ function GalleryImage({ img }: { img: ProjectImage }) {
       alt={img.alt}
       loading="lazy"
       onError={() => setFailed(true)}
-      className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-105"
+      onLoad={(e) => {
+        const { naturalWidth, naturalHeight } = e.currentTarget;
+        if (naturalWidth && naturalHeight) onRatio(naturalWidth / naturalHeight);
+      }}
+      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
     />
   );
 }
