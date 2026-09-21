@@ -341,7 +341,7 @@ export const projects: Project[] = [
     // seguir llamándose BorderCheck-AI_Frontend aunque el producto ahora se
     // llame Easy Customs; ajusta la URL si el repo también cambió de nombre.)
     // repoUrl: 'https://github.com/Lecho67/BorderCheck-AI_Frontend',
-    liveUrl: 'https://border-check-ai-frontend.vercel.app',
+    liveUrl: 'https://easycustoms.vercel.app',
     overview: [
       'Los envíos internacionales se retienen, devuelven o destruyen en aduana por restricciones que el remitente desconoce —baterías de litio, aerosoles, productos regulados—. Resolverlo después toma días y genera multas y sobrecostes evitables.',
       'Easy Customs se consulta antes del despacho: el usuario describe su envío y recibe un veredicto —Apto, Advertencia o Bloqueado— con su justificación legal, los documentos que necesita y una estimación de tributos. La IA no responde en abierto: se ancla a una base de reglas normativas y cada veredicto cita su fuente; cuando faltan datos, marca el caso para revisión humana en vez de forzar un resultado.',
