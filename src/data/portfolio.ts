@@ -234,9 +234,9 @@ export const navItems: NavItem[] = [
 export const about: { headline: string; paragraphs: string[] } = {
   headline: 'Del ciclo completo de producto al modelado de datos.',
   paragraphs: [
-    'Soy Ingeniero Informático y me dedico sobre todo al desarrollo web full-stack. Trabajo el ciclo completo: modelado de datos, APIs y lógica de negocio en el backend (PHP/Laravel, Supabase/PostgreSQL) e interfaz en React con TypeScript. También desarrollo apps Android nativas con Kotlin.',
-    'Me interesan los proyectos donde el software resuelve un problema concreto: asesoría aduanera con IA, plataformas para procesos institucionales o herramientas internas que ahorran horas de trabajo manual.',
-    'En paralelo estoy desarrollando la parte de datos: modelos tabulares de predicción de riesgo sobre datos abiertos colombianos y pipelines ETL que dejan esos datos listos para analizar. Es la misma lógica de siempre —entender el problema y construir la solución completa— aplicada a los datos.',
+    'Soy Ingeniero Informático y me dedico al desarrollo web full-stack. Trabajo el ciclo completo: modelado de datos, APIs y lógica de negocio en el backend (PHP/Laravel, Supabase/PostgreSQL) e interfaz en React con TypeScript. También desarrollo apps Android nativas con Kotlin.',
+    'Me interesan los proyectos donde el software resuelve un problema real y medible: una plataforma que le dice a alguien si su envío pasará la aduana antes de despacharlo, procesos institucionales que dejan de hacerse a mano, o herramientas internas que le ahorran horas de trabajo a un equipo.',
+    'En paralelo estoy aplicando esa misma forma de trabajar a los datos: entreno modelos que predicen riesgo a partir de datos abiertos colombianos, y construyo los pipelines ETL que limpian y preparan esos datos antes de que lleguen al modelo. No es un tema aparte, sino el mismo proceso de siempre —entender el problema y construir la solución completa— aplicado a datos en vez de solo a un producto.',
   ],
 };
 
