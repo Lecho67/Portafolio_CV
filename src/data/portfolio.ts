@@ -235,7 +235,7 @@ export const about: { headline: string; paragraphs: string[] } = {
   headline: 'Del ciclo completo de producto al modelado de datos.',
   paragraphs: [
     'Soy Ingeniero Informático y me dedico al desarrollo web full-stack. Trabajo el ciclo completo: modelado de datos, APIs y lógica de negocio en el backend (PHP/Laravel, Supabase/PostgreSQL) e interfaz en React con TypeScript. También desarrollo apps Android nativas con Kotlin.',
-    'Me interesan los proyectos donde el software resuelve un problema real y medible: una plataforma que le dice a alguien si su envío pasará la aduana antes de despacharlo, procesos institucionales que dejan de hacerse a mano, o herramientas internas que le ahorran horas de trabajo a un equipo.',
+    'Me interesan los proyectos donde el software resuelve un problema real y medible, no solo uno técnicamente interesante. Me gusta entender el negocio detrás de cada funcionalidad, tomar decisiones de principio a fin —desde el modelo de datos hasta la interfaz— y medir el resultado. Por eso me involucro en todo el ciclo de producto, no solo en la capa que toca el usuario.',
     'En paralelo estoy aplicando esa misma forma de trabajar a los datos: entreno modelos que predicen riesgo a partir de datos abiertos colombianos, y construyo los pipelines ETL que limpian y preparan esos datos antes de que lleguen al modelo. No es un tema aparte, sino el mismo proceso de siempre —entender el problema y construir la solución completa— aplicado a datos en vez de solo a un producto.',
   ],
 };
