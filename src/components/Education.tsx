@@ -25,45 +25,60 @@ export function Education() {
   return (
     <Section id="education" index="05" kicker="Formación y certificaciones" title="Formación.">
       {/* Titulación + idiomas */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-stretch">
-        <Reveal
-          as="article"
-          className="flex max-w-xl flex-1 flex-col rounded-xl border border-slate-200 bg-white p-6 dark:border-ink-700 dark:bg-ink-900"
-        >
-          <div className="flex items-start justify-between gap-4">
-            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-brand-500/10 text-brand-500 dark:text-brand-400">
-              <GraduationCap size={22} />
-            </span>
-            <span className="kicker">titulado</span>
-          </div>
-          <h3 className="mt-4 font-display text-lg font-semibold text-slate-900 dark:text-white">
-            {education.degree}
-          </h3>
-          <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">{education.institution}</p>
-          {education.focus.length > 0 && (
-            <ul className="mt-4 flex flex-wrap gap-1.5">
-              {education.focus.map((item) => (
-                <li
-                  key={item}
-                  className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 font-mono text-xs text-slate-600 dark:border-ink-700 dark:bg-ink-800 dark:text-slate-300"
-                >
-                  {item}
-                </li>
-              ))}
-            </ul>
-          )}
-          {education.additional && education.additional.length > 0 && (
-            <p className="mt-4 text-xs text-slate-500 dark:text-slate-500">
-              {education.additional.join(' · ')}
-            </p>
-          )}
-        </Reveal>
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_14rem]">
+        {education.map((item, i) => (
+          <Reveal
+            key={item.degree}
+            as="article"
+            delay={i * 60}
+            className="flex flex-col rounded-xl border border-slate-200 bg-white p-6 dark:border-ink-700 dark:bg-ink-900"
+          >
+            <div className="flex items-start justify-between gap-4">
+              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-brand-500/10 text-brand-500 dark:text-brand-400">
+                <GraduationCap size={22} />
+              </span>
+              <span className="kicker">{item.status ?? 'titulado'}</span>
+            </div>
+            <h3 className="mt-4 font-display text-lg font-semibold text-slate-900 dark:text-white">
+              {item.degree}
+            </h3>
+            <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">{item.institution}</p>
+            {item.focus.length > 0 && (
+              <ul className="mt-4 flex flex-wrap gap-1.5">
+                {item.focus.map((focus) => (
+                  <li
+                    key={focus}
+                    className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 font-mono text-xs text-slate-600 dark:border-ink-700 dark:bg-ink-800 dark:text-slate-300"
+                  >
+                    {focus}
+                  </li>
+                ))}
+              </ul>
+            )}
+            {item.additional && item.additional.length > 0 && (
+              <p className="mt-4 text-xs text-slate-500 dark:text-slate-500">
+                {item.additional.join(' · ')}
+              </p>
+            )}
+            {item.url && (
+              <a
+                href={item.url}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-600 hover:text-brand-500 dark:text-brand-400"
+              >
+                Ver el programa
+                <ArrowUpRight size={15} />
+              </a>
+            )}
+          </Reveal>
+        ))}
 
         {languages.length > 0 && (
           <Reveal
             as="article"
-            delay={60}
-            className="flex w-full flex-col rounded-xl border border-slate-200 bg-white p-6 sm:w-56 dark:border-ink-700 dark:bg-ink-900"
+            delay={120}
+            className="flex w-full flex-col rounded-xl border border-slate-200 bg-white p-6 sm:col-span-2 lg:col-span-1 dark:border-ink-700 dark:bg-ink-900"
           >
             <div className="flex items-start justify-between gap-4">
               <span className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-brand-500/10 text-brand-500 dark:text-brand-400">

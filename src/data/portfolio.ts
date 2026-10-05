@@ -64,6 +64,10 @@ export interface Education {
   focus: string[];
   /** Programas adicionales más cortos (diplomados, escuelas), sin tarjeta propia */
   additional?: string[];
+  /** Etiqueta de estado de la tarjeta. Por defecto 'titulado'. */
+  status?: string;
+  /** Página oficial del programa (opcional) */
+  url?: string;
 }
 
 /** Idioma hablado, para la sección "Formación". */
@@ -507,12 +511,21 @@ export const skillCategories: SkillCategory[] = [
 /* -------------------------------------------------------------------------- */
 
 // TODO: confirma el año de grado (no aparece en la hoja de vida).
-export const education: Education = {
-  degree: 'Ingeniería Informática',
-  institution: 'Universidad Autónoma de Occidente (UAO)',
-  focus: ['Ingeniería de software', 'Bases de datos'],
-  additional: ['Escuela de Liderazgo · UAO'],
-};
+export const education: Education[] = [
+  {
+    degree: 'Ingeniería Informática',
+    institution: 'Universidad Autónoma de Occidente (UAO)',
+    focus: ['Ingeniería de software', 'Bases de datos'],
+    additional: ['Escuela de Liderazgo · UAO'],
+  },
+  {
+    degree: 'Maestría en Inteligencia Artificial y Ciencias de Datos',
+    institution: 'Universidad Autónoma de Occidente (UAO)',
+    focus: ['Inteligencia artificial', 'Ciencias de datos', 'Machine learning', 'Deep learning'],
+    status: 'en curso',
+    url: 'https://www.uao.edu.co/programa/maestria-en-inteligencia-artificial-y-ciencias-de-datos/',
+  },
+];
 
 /** Idiomas — sección "Formación". */
 export const languages: Language[] = [
