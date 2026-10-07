@@ -428,6 +428,39 @@ export const projects: Project[] = [
       { src: '/proyectos/uesvalle-filtrosagua-salud.png', alt: 'Sección final de salud, con observaciones y envío de la encuesta' },
     ],
   },
+  {
+    slug: 'monitoreo-zni',
+    title: 'Monitoreo del servicio de energía en ZNI',
+    description:
+      'Pipeline ETL de extremo a extremo que integra tres APIs abiertas de datos.gov.co sobre el servicio de energía en las Zonas No Interconectadas de Valle, Cauca, Nariño y Putumayo, con calidad de datos medida y un modelo analítico en PostgreSQL listo para Power BI.',
+    tags: ['Python', 'pandas', 'PostgreSQL', 'SQLAlchemy', 'Docker', 'Matplotlib', 'pytest', 'Power BI'],
+    year: '2026',
+    role: 'Maestría · Análisis y ciencia de datos',
+    icon: Database,
+    cover: 'from-indigo-500 via-violet-500 to-fuchsia-600',
+    timeline: '2026 · proyecto de la maestría',
+    context: 'Maestría en Inteligencia Artificial y Ciencias de Datos · UAO',
+    repoUrl: 'https://github.com/Lecho67/ZNI',
+    overview: [
+      'Responder cuánta energía reciben las localidades más aisladas del país exige cruzar fuentes de datos.gov.co con granularidades y llaves distintas: localidad por mes, localidad por día y por generador, y casos individuales de PQR. Sin un proceso que las integre y mida su calidad, las cifras no son comparables ni confiables.',
+      'El proyecto construye ese proceso: extrae las tres fuentes, las limpia y estandariza, las modela en capas (bronze, silver y gold) y carga el resultado en PostgreSQL. Después corre un análisis exploratorio que genera las figuras y cifras clave del informe.',
+    ],
+    contributions: [
+      'Diseño de la arquitectura medallón (bronze/silver/gold) con trazabilidad por registro y reglas de calidad registradas en cada fila.',
+      'Perfilado de las tres fuentes y validación de llaves antes de unirlas; las uniones que no pasan sus pruebas se degradan en lugar de forzarse.',
+      'Modelo analítico en PostgreSQL (dimensiones, hechos, puente con vigencia e indicadores) con pruebas por unión.',
+      'Análisis exploratorio y cuaderno de Jupyter con 16 figuras y tablas de apoyo, reproducibles desde el pipeline.',
+      'Pipeline idempotente con etapas independientes y 220 pruebas automáticas que corren sin red.',
+    ],
+    outcomes: [
+      'Las localidades reciben en promedio 7,8 de 24 horas diarias de servicio, con Cauca y Nariño por debajo de 7 horas, y no hay una mejora generalizada desde 2020.',
+      'Se documentaron hallazgos de calidad de los datos fuente: una de las fuentes de PQR corresponde a empresas de gas y no de energía, por lo que sus conteos se usan solo como contexto municipal.',
+      'Un modelo listo para Power BI, con las advertencias de frescura de cada fuente incluidas en el propio modelo.',
+    ],
+    notes: [
+      'Proyecto académico de la maestría; las fuentes son datos abiertos con cobertura y frescura desiguales: dos de ellas están congeladas (datos hasta 2022 y 2023).',
+    ],
+  },
 ];
 
 /** Busca un proyecto por su `slug` (para la página de detalle). */
