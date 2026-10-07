@@ -117,6 +117,8 @@ export interface Project {
   icon?: LucideIcon;
   /** Clases de gradiente Tailwind para la portada */
   cover?: string;
+  /** Agrupa la tarjeta en el filtro de la sección. Por defecto 'profesional'. */
+  category?: 'profesional' | 'maestria';
 
   /* ---- Página de detalle (#/proyectos/<slug>) ------------------------- */
   /** Duración / dedicación, p. ej. '3 meses · 2025' */
@@ -435,9 +437,10 @@ export const projects: Project[] = [
       'Pipeline ETL de extremo a extremo que integra tres APIs abiertas de datos.gov.co sobre el servicio de energía en las Zonas No Interconectadas de Valle, Cauca, Nariño y Putumayo, con calidad de datos medida y un modelo analítico en PostgreSQL listo para Power BI.',
     tags: ['Python', 'pandas', 'PostgreSQL', 'SQLAlchemy', 'Docker', 'Matplotlib', 'pytest', 'Power BI'],
     year: '2026',
-    role: 'Maestría · Análisis y ciencia de datos',
+    role: 'Análisis y ciencia de datos',
     icon: Database,
     cover: 'from-indigo-500 via-violet-500 to-fuchsia-600',
+    category: 'maestria',
     timeline: '2026 · proyecto de la maestría',
     context: 'Maestría en Inteligencia Artificial y Ciencias de Datos · UAO',
     repoUrl: 'https://github.com/Lecho67/ZNI',

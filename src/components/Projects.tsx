@@ -1,10 +1,26 @@
+import { useMemo, useState } from 'react';
 import { ArrowRight, ExternalLink, Layers } from 'lucide-react';
 import { projects, type Project } from '../data';
 import { Section } from './Section';
 import { Reveal } from './Reveal';
 
+type Filter = 'profesional' | 'maestria';
+
+const FILTERS: { value: Filter; label: string }[] = [
+  { value: 'profesional', label: 'Proyectos' },
+  { value: 'maestria', label: 'Maestría' },
+];
+
 /** Tarjetas de proyecto en formato caso de estudio. Cada una abre su detalle. */
 export function Projects() {
+  const [filter, setFilter] = useState<Filter>('profesional');
+
+  const visible = useMemo(
+    () => projects.filter((p) => (p.category ?? 'profesional') === filter),
+    [filter],
+  );
+  const hasMaestria = useMemo(() => projects.some((p) => p.category === 'maestria'), []);
+
   return (
     <Section
       id="projects"
@@ -13,8 +29,33 @@ export function Projects() {
       title="Proyectos"
       subtitle="Proyectos en los que he trabajado. Abre cualquiera para ver el problema, las decisiones de arquitectura y el resultado."
     >
+      {hasMaestria && (
+        <div
+          role="tablist"
+          aria-label="Filtrar proyectos"
+          className="mb-8 inline-flex gap-1 rounded-full border border-slate-200 bg-slate-50 p-1 dark:border-ink-700 dark:bg-ink-900"
+        >
+          {FILTERS.map(({ value, label }) => (
+            <button
+              key={value}
+              type="button"
+              role="tab"
+              aria-selected={filter === value}
+              onClick={() => setFilter(value)}
+              className={`rounded-full px-4 py-1.5 text-sm font-semibold transition-colors ${
+                filter === value
+                  ? 'bg-brand-600 text-white'
+                  : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      )}
+
       <div className="space-y-5">
-        {projects.map((project, i) => (
+        {visible.map((project, i) => (
           <Reveal
             as="article"
             key={project.slug}
